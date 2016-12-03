@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using NovelDownloader.Token;
+using System.Web;
 using SamLu.Web;
 
 namespace NovelDownloader.Plugin.luoqiu.com
 {
 	public class ChapterToken : NDTChapter
 	{
-		internal static readonly Regex ChapterUrlRegex = new Regex(@"http://www.luoqiu.com/read/(?<BookUnicode>\d*/(?<ChapterUnicode>\d*).html", RegexOptions.Compiled);
+		internal static readonly Regex ChapterUrlRegex = new Regex(@"http://www.luoqiu.com/read/(?<BookUnicode>\d*)/(?<ChapterUnicode>\d*).html", RegexOptions.Compiled);
 
 		public override string Type { get; protected set; } = "章节";
 
@@ -29,6 +30,11 @@ namespace NovelDownloader.Plugin.luoqiu.com
 			}
 		}
 
+		/// <summary>
+		/// 初始化<see cref="NDTChapter"/>对象。
+		/// </summary>
+		public ChapterToken() : base() { }
+
 		public ChapterToken(string url) : this(new Uri(url)) { }
 
 		public ChapterToken(string title, string description) : base(title, description) { }
@@ -43,14 +49,24 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		{
 			if ((this.ChapterUrl == null) || !ChapterToken.ChapterUrlRegex.IsMatch(this.ChapterUrl)) return false;
 
-			string source = HTML.GetSource(this.ChapterUrl);
-			Match m = Regex.Match(source, @"id=""content""\.*?>(?<ChapterContentHTML>\.*?)</div>", RegexOptions.Compiled);
-			if (m.Success)
+			try
 			{
+				string source = HTML.GetSource(this.ChapterUrl, Encoding.GetEncoding("GBK"));
+				Match m = Regex.Match(source, @"id=("")?content("")?[\s\S]*?>(?<ChapterContentHTML>[\s\S]*?)</div>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+				if (!m.Success) return false;
+
 				this.chapterContentHTML = m.Groups["ChapterContentHTML"].Value;
-				return true;
 			}
-			else return false;
+			catch (Exception e)
+			{
+#if DEBUG
+				throw;
+#endif
+				this.OnCreepErrored(this, e);
+				return false;
+			}
+
+			return true;
 		}
 
 		protected override void StartCreepInternal()
@@ -81,11 +97,11 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		
 		private string Creep()
 		{
-			const string SEPERATOR = "<br>";
+			const string SEPERATOR = "<br />";
 
 			int start_index = this.index;
 			int end_index = this.chapterContentHTML.IndexOf(SEPERATOR, index) - 1;
-			if (end_index == -1)
+			if (end_index == -2)
 			{
 				end_index = this.chapterContentHTML.Length - 1;
 				this.index = end_index + 1;
@@ -121,11 +137,11 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		{
 			if (!this.CanCreep(this.index)) return false;
 
-			string data = this.Creep().Trim();
+			string data = HttpUtility.HtmlDecode((this.Creep()).Replace("<br />", Environment.NewLine)).Trim();
 			if (data != string.Empty)
 			{
 				this.Add(new TextToken(data));
-				this.OnCreepFetched(this, new DataEventArgs<object>(data));
+				this.OnCreepFetched(this, data);
 			}
 			return true;
 		}

@@ -13,6 +13,11 @@ namespace NovelDownloader.Token
 		public virtual string Author { get; protected set; }
 
 		/// <summary>
+		/// 初始化<see cref="NDTBook"/>对象。
+		/// </summary>
+		protected NDTBook() : base() { }
+
+		/// <summary>
 		/// 使用指定的统一资源标识符初始化<see cref="NDTBook"/>对象。
 		/// </summary>
 		/// <param name="uri"></param>

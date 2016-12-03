@@ -8,6 +8,12 @@ namespace NovelDownloader.Plugin.luoqiu.com
 {
 	public class TextToken : NDTText
 	{
+
+		/// <summary>
+		/// 初始化<see cref="NDTChapter"/>对象。
+		/// </summary>
+		public TextToken() : base() { }
+
 		/// <summary>
 		/// 使用指定的内容初始化<see cref="TextToken"/>对象。
 		/// </summary>

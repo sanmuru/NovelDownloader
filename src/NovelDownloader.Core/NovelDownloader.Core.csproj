@@ -48,7 +48,7 @@
     <Compile Include="Plugin\INovelDownloadPlugin.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
     <Compile Include="Plugin\IPluginLoader.cs" />
-    <Compile Include="Token\NDTVolumn.cs" />
+    <Compile Include="Token\NDTVolume.cs" />
     <Compile Include="Plugin\PluginBase.cs" />
     <Compile Include="Plugin\PluginLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

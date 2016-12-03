@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NovelDownloader.Token;
 
 namespace NovelDownloader
 {
@@ -52,6 +53,16 @@ namespace NovelDownloader
 		/// 当爬虫终止时发生。
 		/// </summary>
 		public event EventHandler CreepFinished = (sender, e) => { };
+
+		/// <summary>
+		/// 当爬虫遇到内部错误时发生。
+		/// </summary>
+		public event EventHandler<DataEventArgs<Exception>> CreepErrored = (sender, e) => { };
+
+		/// <summary>
+		/// 初始化<see cref="NDToken"/>对象。
+		/// </summary>
+		protected NDToken() { }
 
 		/// <summary>
 		/// 使用指定的标志类型、标题和说明初始化<see cref="NDToken"/>对象。
@@ -161,22 +172,34 @@ namespace NovelDownloader
 				}
 			}
 
-			bool canCreep = false;
+			bool canStartCreep = false;
 			lock (this.syncObj)
 			{
-				canCreep = this.CanStartCreep(); 
+				canStartCreep = this.CanStartCreep();
+#if DEBUG
+				Console.WriteLine("canStartCreep = {0}", canStartCreep);
+#endif
 			}
 
-			if (canCreep)
+			if (canStartCreep)
 			{
-				this.StartCreepInternal();
-				
-				while (true)
+				try
 				{
-					lock (this.syncObj)
+					this.StartCreepInternal();
+
+					while (true)
 					{
-						if (!this.CreepInternal()) break;
+						lock (this.syncObj)
+						{
+							if (!this.CreepInternal()) break;
+						}
 					}
+				}
+				catch (Exception)
+				{
+#if DEBUG
+					throw;
+#endif
 				}
 			}
 
@@ -253,6 +276,27 @@ namespace NovelDownloader
 		}
 
 		/// <summary>
+		/// 供<see cref="NDToken"/>的派生类型引发<see cref="CreepFetched"/>事件的调用方法。
+		/// </summary>
+		/// <typeparam name="TData">封装在事件参数中的数据的类型。</typeparam>
+		/// <param name="sender">事件的引发者。</param>
+		/// <param name="data">封装在事件参数中的数据。</param>
+		protected virtual void OnCreepFetched<TData>(object sender, TData data)
+		{
+			this.OnCreepFetched(sender, (object)data);
+		}
+
+		/// <summary>
+		/// 供<see cref="NDToken"/>的派生类型引发<see cref="CreepFetched"/>事件的调用方法。
+		/// </summary>
+		/// <param name="sender">事件的引发者。</param>
+		/// <param name="data">封装在事件参数中的数据。</param>
+		protected virtual void OnCreepFetched(object sender, object data)
+		{
+			this.OnCreepFetched(sender, new DataEventArgs<object>(data));
+		}
+
+		/// <summary>
 		/// 供<see cref="NDToken"/>的派生类型引发<see cref="CreepFinished"/>事件的调用方法。
 		/// </summary>
 		/// <param name="sender">事件的引发者。</param>
@@ -260,6 +304,37 @@ namespace NovelDownloader
 		protected virtual void OnCreepFinished(object sender, EventArgs e)
 		{
 			this.CreepFinished.Invoke(sender, e);
+		}
+
+		/// <summary>
+		/// 供<see cref="NDToken"/>的派生类型引发<see cref="CreepErrored"/>事件的调用方法。
+		/// </summary>
+		/// <param name="sender">事件的引发者。</param>
+		/// <param name="e">事件的参数。</param>
+		protected virtual void OnCreepErrored(object sender, DataEventArgs<Exception> e)
+		{
+			this.CreepErrored.Invoke(sender, e);
+		}
+
+		/// <summary>
+		/// 供<see cref="NDToken"/>的派生类型引发<see cref="CreepErrored"/>事件的调用方法。
+		/// </summary>
+		/// <typeparam name="TException">封装在事件参数中的异常的类型。</typeparam>
+		/// <param name="sender">事件的引发者。</param>
+		/// <param name="exception">封装在事件参数中的异常。</param>
+		protected virtual void OnCreepErrored<TException>(object sender, TException exception) where TException : Exception
+		{
+			this.OnCreepErrored(sender, (Exception)exception);
+		}
+
+		/// <summary>
+		/// 供<see cref="NDToken"/>的派生类型引发<see cref="CreepErrored"/>事件的调用方法。
+		/// </summary>
+		/// <param name="sender">事件的引发者。</param>
+		/// <param name="exception">封装在事件参数中的异常。</param>
+		protected virtual void OnCreepErrored(object sender, Exception exception)
+		{
+			this.OnCreepErrored(sender, new DataEventArgs<Exception>(exception));
 		}
 	}
 }

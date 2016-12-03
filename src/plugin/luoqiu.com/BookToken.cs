@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using NovelDownloader.Token;
 using SamLu.Web;
 
@@ -11,7 +12,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 	public class BookToken : NDTBook
 	{
 		internal static readonly Regex BookUrlRegex = new Regex(@"http://www.luoqiu.com/book/(?<BookUnicode>\d*).html", RegexOptions.Compiled);
-		internal static readonly Regex CategoryUrlRegex = new Regex(@"http://www.luoqiu.com/read/(?<BookUnicode>\d*/", RegexOptions.Compiled);
+		internal static readonly Regex CategoryUrlRegex = new Regex(@"http://www.luoqiu.com/read/(?<BookUnicode>\d*)/(index.html)?", RegexOptions.Compiled);
 
 		private string bookCategoryHTML;
 
@@ -35,6 +36,11 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		/// 目录的URL。
 		/// </summary>
 		internal string CategoryUrl { get; private set; }
+
+		/// <summary>
+		/// 初始化<see cref="BookToken"/>对象。
+		/// </summary>
+		public BookToken() : base() { }
 
 		/// <summary>
 		/// 使用指定的统一资源标识符初始化<see cref="BookToken"/>对象。
@@ -67,8 +73,41 @@ namespace NovelDownloader.Plugin.luoqiu.com
 			}
 			else
 				throw new InvalidOperationException(
-			  "无法解析URL。",
-			  new ArgumentOutOfRangeException(nameof(url), url, "URL不符合格式。"));
+				  "无法解析URL。",
+				  new ArgumentOutOfRangeException(nameof(url), url, "URL不符合格式。"));
+
+
+
+			string book_source = HTML.GetSource(this.BookUrl, Encoding.GetEncoding("GBK"));
+
+			Match head_match = Regex.Match(book_source, @"<head>(?<HeadContent>[\s\S]*?)</head>", RegexOptions.Compiled);
+			if (!head_match.Success) throw new InvalidOperationException("无法抓取信息。");
+
+			string head = head_match.Groups["HeadContent"].Value;
+
+			MatchCollection meta_matches = Regex.Matches(head, @"<meta property=""(?<MetaProperty>[\s\S]*?)"" content=""(?<MetaContent>[\s\S]*?)""/>", RegexOptions.Compiled);
+			if (meta_matches.Count == 0) throw new InvalidOperationException("无法抓取信息。");
+
+			foreach (Match meta_match in meta_matches)
+			{
+				if (!meta_match.Success) throw new InvalidOperationException("无法抓取信息。");
+
+				switch (meta_match.Groups["MetaProperty"].Value)
+				{
+					case "og:novel:book_name":
+						this.Title = HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value);
+						break;
+					case "og:novel:author":
+						this.Author = HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value);
+						break;
+					case "og:image":
+						this.Cover = HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value);
+						break;
+					case "og:description":
+						this.Description = HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value.Replace("<br />", Environment.NewLine)).Trim();
+						break;
+				}
+			}
 		}
 
 		/// <summary>
@@ -90,58 +129,33 @@ namespace NovelDownloader.Plugin.luoqiu.com
 			if (
 				((this.BookUrl == null) || !BookToken.BookUrlRegex.IsMatch(this.BookUrl)) ||
 				((this.CategoryUrl == null) || !BookToken.CategoryUrlRegex.IsMatch(this.CategoryUrl))
-			) return false;
-
+			)
+				return false;
+				
 			try
 			{
-				string source = HTML.GetSource(this.BookUrl);
+				string category_source = HTML.GetSource(this.CategoryUrl, Encoding.GetEncoding("GBK"));
+				Match m = Regex.Match(category_source, @"<!--作品展示 start-->(?<BookCategoryHTML>[\s\S]*?)<!--作品展示 end-->", RegexOptions.Compiled);
+				if (!m.Success) return false;
 
-				Match head_match = Regex.Match(source, @"<head>(?<HeadContent>\.*?_</head>", RegexOptions.Compiled);
-				if (!head_match.Success) throw new InvalidOperationException("无法抓取信息。");
-
-				source = head_match.Groups["HeadContent"].Value;
-
-				MatchCollection meta_matches = Regex.Matches(source, @"<meta property=""(?<MetaProperty>\.*?)"" content=""(?<MetaContent>\.*?)"">", RegexOptions.Compiled);
-				if (meta_matches.Count == 0) throw new InvalidOperationException("无法抓取信息。");
-
-				foreach (Match meta_match in meta_matches)
-				{
-					if (!meta_match.Success) throw new InvalidOperationException("无法抓取信息。");
-
-					switch (meta_match.Groups["MetaProperty"].Value)
-					{
-						case "og:novel:book_name":
-							this.Title = meta_match.Groups["MetaContent"].Value;
-							break;
-						case "og:novel:author":
-							this.Author = meta_match.Groups["MetaContent"].Value;
-							break;
-						case "og:image":
-							this.Cover = meta_match.Groups["MetaContent"].Value;
-							break;
-						case "og:description":
-							this.Description = meta_match.Groups["MetaContent"].Value;
-							break;
-					}
-				}
+				this.bookCategoryHTML = m.Groups["BookCategoryHTML"].Value;
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
+#if DEBUG
+				throw;
+#endif
+				this.OnCreepErrored(this, e);
 				return false;
 			}
-
-			Match m = Regex.Match(@"<!--作品展示 start-->(?<BookCategoryHTML>\.*?)<!--作品展示 end-->", "", RegexOptions.Compiled);
-			if (m.Success)
-			{
-				this.bookCategoryHTML = m.Groups["BookCategoryHTML"].Value;
-				return true;
-			}
-			return false;
-        }
+			
+			return true;
+		}
 
 		protected override void StartCreepInternal()
 		{
-			this.chapterRegex = new Regex(string.Format(@"<a href=""(?<ChapterRelativeUrl>/read/{0}/(?<ChapterUnicode>\d*?).html)""alt=""(?<AltContent>\.*?)"">(?<ChapterTitle>\.*?)</a>"), RegexOptions.Compiled);
+			const string REGEX = @"<a href=""(?<ChapterRelativeUrl>/read/{0}/(?<ChapterUnicode>\d*?).html)"" alt=""(?<AltContent>[\s\S]*?)"">(?<ChapterTitle>[\s\S]*?)</a>";
+			this.chapterRegex = new Regex(string.Format(REGEX, this.BookUnicode), RegexOptions.Compiled);
 		}
 		#endregion
 
@@ -171,10 +185,12 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		
 		private string[] Creep()
 		{
+			this.index = this.nextMatch.Index + this.nextMatch.Length;
+			
 			return new string[2]
 			{
 				this.nextMatch.Groups["ChapterTitle"].Value,
-				new Uri(LuoQiu_NovelDownloader.HostUri, new Uri(this.nextMatch.Groups["ChapterRelativeUrl"].Value)).ToString()
+				new Uri(LuoQiu_NovelDownloader.HostUri, new Uri(this.nextMatch.Groups["ChapterRelativeUrl"].Value, UriKind.Relative)).ToString()
 			};
 		}
 
@@ -203,8 +219,8 @@ namespace NovelDownloader.Plugin.luoqiu.com
 			string[] data = this.Creep();
 			if (data != null && data.Length == 2)
 			{
-				this.Add(new ChapterToken(new Uri(data[1])));
-				this.OnCreepFetched(this, new DataEventArgs<object>(data[0]));
+				this.Add(new ChapterToken(new Uri(data[1])) { Title = data[0] });
+				this.OnCreepFetched(this, data[0]);
 			}
 			return true;
 		}

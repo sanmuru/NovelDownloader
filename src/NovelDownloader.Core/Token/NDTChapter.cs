@@ -11,6 +11,11 @@ namespace NovelDownloader.Token
 	public abstract class NDTChapter : NDToken
 	{
 		/// <summary>
+		/// 初始化<see cref="NDTChapter"/>对象。
+		/// </summary>
+		protected NDTChapter() : base() { }
+		
+		/// <summary>
 		/// 使用指定的统一资源标识符初始化<see cref="NDTChapter"/>对象。
 		/// </summary>
 		/// <param name="uri"></param>

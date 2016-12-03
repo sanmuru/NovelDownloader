@@ -48,6 +48,11 @@ namespace NovelDownloader.Token
 		}
 
 		/// <summary>
+		/// 初始化<see cref="NDTText"/>对象。
+		/// </summary>
+		protected NDTText() : base() { }
+
+		/// <summary>
 		/// 使用指定的统一资源标识符初始化<see cref="NDTText"/>对象。
 		/// </summary>
 		/// <param name="uri"></param>
@@ -60,7 +65,7 @@ namespace NovelDownloader.Token
 		
 		protected NDTText(string content) : this(nameof(NDTText), content) { }
 
-		private NDTText(string type, string content) : base(type, null, null)
+		private NDTText(string type, string content) : base()
 		{
 			this.Content = content;
 		}
