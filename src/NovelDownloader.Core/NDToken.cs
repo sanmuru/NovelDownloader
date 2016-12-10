@@ -183,23 +183,23 @@ namespace NovelDownloader
 
 			if (canStartCreep)
 			{
-				try
-				{
-					this.StartCreepInternal();
+				this.StartCreepInternal();
 
-					while (true)
+				while (true)
+				{
+					lock (this.syncObj)
 					{
-						lock (this.syncObj)
+						try
 						{
 							if (!this.CreepInternal()) break;
 						}
-					}
-				}
-				catch (Exception)
-				{
+						catch (Exception)
+						{
 #if DEBUG
-					throw;
+							throw;
 #endif
+						}
+					}
 				}
 			}
 

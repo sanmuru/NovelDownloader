@@ -10,7 +10,15 @@ namespace NovelDownloader.Token
 	/// </summary>
 	public abstract class NDTBook : NDToken
 	{
-		public virtual string Author { get; protected set; }
+		/// <summary>
+		/// 书籍的作者。
+		/// </summary>
+		public virtual string Author { get; protected set; } = null;
+
+		/// <summary>
+		/// 书籍的封面统一资源标识符。
+		/// </summary>
+		public virtual Uri Cover { get; protected set; } = null;
 
 		/// <summary>
 		/// 初始化<see cref="NDTBook"/>对象。

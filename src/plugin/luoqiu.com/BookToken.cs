@@ -19,11 +19,6 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		public override string Type { get; protected set; } = "书籍";
 
 		/// <summary>
-		/// 书籍的封面URL。
-		/// </summary>
-		public string Cover { get; private set; } = null;
-
-		/// <summary>
 		/// 书籍的统一码。
 		/// </summary>
 		internal ulong BookUnicode { get; private set; }
@@ -101,7 +96,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 						this.Author = HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value);
 						break;
 					case "og:image":
-						this.Cover = HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value);
+						this.Cover = new Uri(HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value), UriKind.Absolute);
 						break;
 					case "og:description":
 						this.Description = HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value.Replace("<br />", Environment.NewLine)).Trim();

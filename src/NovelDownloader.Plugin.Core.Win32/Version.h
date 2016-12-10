@@ -14,7 +14,7 @@ typedef struct
 	LPCTSTR Date; // ÈÕÆÚ°æ±¾ºÅ
 	LPCTSTR Period; // Ï£À°×ÖÄ¸°æ±¾ºÅ
 } _Version;
-typedef _Version *Version;
+typedef _Version Version;
 
 #ifdef __cplusplus
 EXTERN_C
@@ -28,6 +28,7 @@ NOVELDOWNLOADERPLUGINCOREWIN32_API unsigned int Version_Revision(HVERSION);
 
 NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR Version_Date(HVERSION);
 NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR Version_Period(HVERSION);
+
 #ifdef __cplusplus
 }
 #endif

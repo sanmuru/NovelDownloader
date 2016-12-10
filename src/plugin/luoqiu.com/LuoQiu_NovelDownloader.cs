@@ -13,7 +13,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		/// 落秋中文小说网的主域名。
 		/// </summary>
 		public static readonly Uri HostUri = new Uri("http://www.luoqiu.com", UriKind.Absolute);
-
+		
 		public string Name { get; private set; } = "luoqiu.com";
 
 		public string DisplayName { get; private set; } = "落秋中文小说下载";
@@ -74,6 +74,30 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		public NDTBook GetBookToken(Uri uri)
 		{
 			return new BookToken(uri);
+		}
+
+		/// <summary>
+		/// 尝试获取位于指定的<see cref="Uri"/>位置的小说标签。
+		/// </summary>
+		/// <param name="uri">指定的统一资源标识符。</param>
+		/// <param name="bookToken">位于指定的<see cref="Uri"/>位置的小说标签。</param>
+		/// <returns>是否获取成功。</returns>
+		public bool TryGetBookToken(Uri uri, out NDTBook bookToken)
+		{
+			try
+			{
+				bookToken = this.GetBookToken(uri);
+				
+				return (bookToken != null);
+			}
+			catch (Exception)
+			{
+				bookToken = null;
+#if DEBUG
+				throw;
+#endif
+				return false;
+			}
 		}
 	}
 }

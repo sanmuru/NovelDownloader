@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\Plugin">
+      <UniqueIdentifier>{e479393e-ce50-44ee-8cae-e39925fd64d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Token">
+      <UniqueIdentifier>{017e1b6c-e740-4bac-919e-62ffe8f45543}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -27,10 +33,19 @@
     <ClInclude Include="exports.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Plugin.h">
+    <ClInclude Include="Version.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Version.h">
+    <ClInclude Include="NovelDownloadPlugin.h">
+      <Filter>头文件\Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugin.h">
+      <Filter>头文件\Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="NDTBook.h">
+      <Filter>头文件\Token</Filter>
+    </ClInclude>
+    <ClInclude Include="macros.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -42,6 +57,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Plugin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NovelDownloadPlugin.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
