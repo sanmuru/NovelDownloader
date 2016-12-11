@@ -1,8 +1,27 @@
 #pragma once
-//#undef __cplusplus
+
 #ifndef _PLUGIN_H_
 #define _PLUGIN_H_
+
+struct PluginInterface_;
+struct Plugin_;
+
+#ifndef PLUGIN_INHERITANCE
+#define PLUGIN_INHERITANCE
+#ifdef __cplusplus
+typedef struct Plugin_ Plugin;
+#else
+typedef const struct PluginInterface_ *Plugin;
+#endif
+
 #include "Plugin.Core.Win32.h"
+
+#undef PLUGIN_INHERITANCE
+#endif
+#include "Plugin.Core.Win32.h"
+#ifdef PLUGIN_INHERITANCE
+#undef PLUGIN_INHERITANCE
+#endif
 
 static void CreateInstance_PluginInterface_(PluginInterface_ *p_pi);
 struct PluginInterface_

@@ -15,6 +15,11 @@ namespace NovelDownloader.Plugin
 		public IDictionary<Guid, IPlugin> Plugins { get; private set; } = new Dictionary<Guid, IPlugin>();
 
 		/// <summary>
+		/// 初始化<see cref="PluginLoader"/>对象。
+		/// </summary>
+		public PluginLoader() { }
+
+		/// <summary>
 		/// 从指定路径的文件中加载插件，并返回所有加载的插件。
 		/// </summary>
 		/// <param name="pluginFileName">指定路径的文件。</param>
@@ -54,6 +59,12 @@ namespace NovelDownloader.Plugin
 				if (!this.Plugins.ContainsKey(plugin.Guid)) this.Plugins.Add(plugin.Guid, plugin);
 				yield return plugin;
 			}
+		}
+
+		public void Release(IPlugin plugin)
+		{
+			if (this.Plugins.ContainsKey(plugin.Guid))
+				this.Plugins.Remove(plugin.Guid);
 		}
 	}
 }

@@ -18,14 +18,12 @@ namespace NovelDownloader.Plugin
 		/// <summary>
 		/// 加载插件句柄的委托对象。
 		/// </summary>
-		protected internal UnmanagedResourceLoader LoadPlugin;
-
+		protected internal DPluginLoad LoadPlugin;
 		/// <summary>
 		/// 释放插件句柄的委托对象。
 		/// </summary>
-		protected internal UnmanagedResourceReleaser ReleasePlugin;
+		protected internal DPluginRelease ReleasePlugin;
 
-		public delegate string DPluginInvocationReturnsString(IntPtr pluginHandle);
 		/// <summary>
 		/// 封装了Win32Dll中获取插件名称的函数。
 		/// </summary>
@@ -34,8 +32,6 @@ namespace NovelDownloader.Plugin
 		/// 封装了Win32Dll中获取插件显示在插件管理器中的名称的函数。
 		/// </summary>
 		protected internal DPluginInvocationReturnsString PluginDisplayNameFunc;
-
-		public delegate Version DPluginInvocationReturnsVersion(IntPtr pluginHandle);
 		/// <summary>
 		/// 封装了Win32Dll中获取插件版本的函数。
 		/// </summary>
@@ -44,57 +40,87 @@ namespace NovelDownloader.Plugin
 		/// 封装了Win32Dll中获取插件支持的最小版本的函数。
 		/// </summary>
 		protected internal DPluginInvocationReturnsVersion PluginMinVersionFunc;
-
 		/// <summary>
 		/// 封装了Win32Dll中获取插件描述的函数。
 		/// </summary>
 		protected internal DPluginInvocationReturnsString PluginDescriptionFunc;
-
-		protected internal DPluginInvocationReturnsString PluginGuidFunc;
+		/// <summary>
+		/// 封装了Win32Dll中获取插件全局唯一标识符的函数。
+		/// </summary>
+		protected internal DPluginInvocationReturnsGuid PluginGuidFunc;
 
 		/// <summary>
 		/// 获取插件的名字。
 		/// </summary>
-		public string Name { get; protected set; }
+		public string Name
+		{
+			get
+			{
+				return this.PluginNameFunc(this.PluginHandle);
+			}
+		}
 
 		/// <summary>
 		/// 获取插件显示在插件管理器中的名字
 		/// </summary>
-		public string DisplayName { get; protected set; }
+		public string DisplayName
+		{
+			get
+			{
+				return this.PluginDisplayNameFunc(this.PluginHandle);
+			}
+		}
 
 		/// <summary>
 		/// 获取插件的版本
 		/// </summary>
-		public Version Version { get; protected set; }
+		public Version Version
+		{
+			get
+			{
+				return this.PluginVersionFunc(this.PluginHandle);
+			}
+		}
 
 		/// <summary>
 		/// 获取插件支持的最小版本
 		/// </summary>
-		public Version MinVersion { get; protected set; }
+		public Version MinVersion
+		{
+			get
+			{
+				return this.PluginMinVersionFunc(this.PluginHandle);
+			}
+		}
 
 		/// <summary>
 		/// 获取插件的说明
 		/// </summary>
-		public string Description { get; protected set; }
+		public string Description
+		{
+			get
+			{
+				return this.PluginDescriptionFunc(this.PluginHandle);
+			}
+		}
 
 		/// <summary>
 		/// 获取插件的全局唯一标识符。
 		/// </summary>
-		public Guid Guid { get; protected set; }
+		public Guid Guid
+		{
+			get
+			{
+				return this.PluginGuidFunc(this.PluginHandle);
+			}
+		}
 
 		/// <summary>
 		/// 初始化<see cref="Win32Plugin"/>对象。
 		/// </summary>
 		protected internal virtual void Init()
 		{
-			this.PluginHandle = this.LoadPlugin();
-
-			this.Name = this.PluginNameFunc(this.PluginHandle);
-			this.DisplayName = this.PluginDisplayNameFunc(this.PluginHandle);
-			this.Version = this.PluginVersionFunc(this.PluginHandle);
-			this.MinVersion = this.PluginMinVersionFunc(this.PluginHandle);
-			this.Description = this.PluginDescriptionFunc(this.PluginHandle);
-			this.Guid = new Guid(this.PluginGuidFunc(this.PluginHandle));
+			this.PluginHandle = this.LoadPlugin(this.Guid);
 		}
 
 		protected internal Win32Plugin(IWin32PluginLoader pluginLoader, IntPtr moduleHandle)
@@ -106,32 +132,17 @@ namespace NovelDownloader.Plugin
 			const string PluginDescriptionFuncName = "Plugin_Description";
 			const string PluginGuidFuncName = "Plugin_Guid";
 
-			this.setFunc(ref this.PluginNameFunc, pluginLoader, moduleHandle, PluginNameFuncName);
-			this.setFunc(ref this.PluginDisplayNameFunc, pluginLoader, moduleHandle, PluginDisplayNameFuncName);
-			this.setFunc(ref this.PluginVersionFunc, pluginLoader, moduleHandle, PluginVersionFuncName);
-			this.setFunc(ref this.PluginMinVersionFunc, pluginLoader, moduleHandle, PluginMinVersionFuncName);
-			this.setFunc(ref this.PluginDescriptionFunc, pluginLoader, moduleHandle, PluginDescriptionFuncName);
-			this.setFunc(ref this.PluginGuidFunc, pluginLoader, moduleHandle, PluginGuidFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginNameFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginNameFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginDisplayNameFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginDisplayNameFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginVersionFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginVersionFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginMinVersionFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginMinVersionFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginDescriptionFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginDescriptionFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginGuidFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginGuidFuncName);
+
+			this.Init();
 		}
 
-		/// <summary>
-		/// 将导出函数封装到对应委托字段中。
-		/// </summary>
-		/// <typeparam name="T">对应委托类型</typeparam>
-		/// <param name="func">对应委托字段。</param>
-		/// <param name="pluginLoader">插件加载器。</param>
-		/// <param name="moduleHandle">导出函数所属的DLL模块句柄。</param>
-		/// <param name="funcName">导出函数名称。</param>
-		private void setFunc<T>(ref T func, IWin32PluginLoader pluginLoader, IntPtr moduleHandle, string funcName) where T : class
-		{
-			IntPtr pFunc = pluginLoader.GetProcAddress(funcName);
-			if (pFunc == IntPtr.Zero) throw new Win32Exception(string.Format("无法获取导出函数{0}的地址。", funcName));
 
-			T dFunc = Marshal.GetDelegateForFunctionPointer(pFunc, typeof(T)) as T;
-			if (dFunc == null) throw new Win32Exception(string.Format("将导出函数{0}的函数指针封装为托管委托对象失败。", funcName));
-
-			func = dFunc;
-		}
 
 		#region IDisposable Support
 		private bool disposedValue = false; // 要检测冗余调用
@@ -149,6 +160,15 @@ namespace NovelDownloader.Plugin
 				// TODO: 将大型字段设置为 null。
 				this.ReleasePlugin(this.PluginHandle);
 				this.PluginHandle = IntPtr.Zero;
+
+				this.LoadPlugin = null;
+				this.ReleasePlugin = null;
+				this.PluginNameFunc = null;
+				this.PluginDisplayNameFunc = null;
+				this.PluginVersionFunc = null;
+				this.PluginMinVersionFunc = null;
+				this.PluginDescriptionFunc = null;
+				this.PluginGuidFunc = null;
 
 				disposedValue = true;
 			}

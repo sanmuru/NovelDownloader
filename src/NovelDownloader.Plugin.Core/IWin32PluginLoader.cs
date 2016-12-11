@@ -18,6 +18,6 @@ namespace NovelDownloader.Plugin
 		/// <summary>
 		/// 封装GetProcAddress系统API的委托。
 		/// </summary>
-		GetProcAddress GetProcAddress { get; }
+		GetProcAddress GetProcAddressFunc { get; }
 	}
 }

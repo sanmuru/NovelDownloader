@@ -8,5 +8,6 @@ namespace NovelDownloader.Plugin
 	public interface IPluginLoader
 	{
 		IEnumerable<IPlugin> Load(string pluginFileName);
+		void Release(IPlugin plugin);
 	}
 }
