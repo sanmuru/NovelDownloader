@@ -20,7 +20,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 
 		public Version MinVersion { get; private set; } = Version.MinVersion;
 
-		public Version Version { get; private set; } = new Version(0, 0);
+		public Version Version { get; private set; } = new Version(1, 0, 0, DateTime.Now.ToString("yyyyMMdd"), Version.BetaVersion);
 
 		public string Description { get; private set; } = "提供落秋中文(luoqiu.com)小说下载。";
 

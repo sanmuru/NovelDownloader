@@ -16,11 +16,18 @@ namespace NovelDownloader.Plugin
 		/// <param name="func">对应委托对象。</param>
 		/// <param name="funcHandle">Win32Dll中对应导出函数的地址。</param>
 		/// <param name="errorMessage">当参数<paramref name="funcHandle"/>指定的导出函数的函数指针封装为托管委托对象失败时抛出的异常的信息。</param>
+		/// <exception cref="ArgumentException">
+		/// <para>泛型类型<typeparamref name="T"/>不是从<see cref="Delegate"/>基类派生而来的委托类型。</para>
+		/// <para>泛型类型<typeparamref name="T"/>是<see cref="Delegate"/>基类自身。</para>
+		/// </exception>
 		/// <exception cref="Win32Exception">
 		/// 将参数<paramref name="funcHandle"/>指定的导出函数的函数指针封装为托管委托对象时失败。
 		/// </exception>
 		public static void MarshalDelegateFromFunctionPointer<T>(out T func, IntPtr funcHandle, string errorMessage = null) where T : class
 		{
+			if (!typeof(Delegate).IsAssignableFrom(typeof(T)) || typeof(T).Equals(typeof(Delegate)))
+				throw new ArgumentException(string.Format("泛型类型{0}必须为委托类型且不能为{1}", typeof(T).FullName, typeof(Delegate).FullName), nameof(T));
+
 			T dFunc = Marshal.GetDelegateForFunctionPointer(funcHandle, typeof(T)) as T;
 			if (dFunc == null) throw new Win32Exception(errorMessage ?? "导出函数的函数指针封装为托管委托对象失败。");
 
@@ -35,8 +42,15 @@ namespace NovelDownloader.Plugin
 		/// <param name="funcName">导出函数名称。</param>
 		/// <param name="funcHandle">Win32Dll中对应导出函数的地址。</param>
 		/// <param name="errorMessage">当参数<paramref name="funcHandle"/>指定的导出函数的函数指针封装为托管委托对象失败时抛出的异常的信息。</param>
+		/// <exception cref="ArgumentException">
+		/// <para>泛型类型<typeparamref name="T"/>不是从<see cref="Delegate"/>基类派生而来的委托类型。</para>
+		/// <para>泛型类型<typeparamref name="T"/>是<see cref="Delegate"/>基类自身。</para>
+		/// </exception>
 		internal static void MarshalDelegateFromFunctionPointer<T>(out T func, string funcName, IntPtr funcHandle, string errorMessage = null) where T : class
 		{
+			if (!typeof(Delegate).IsAssignableFrom(typeof(T)) || typeof(T).Equals(typeof(Delegate)))
+				throw new ArgumentException(string.Format("泛型类型{0}必须为委托类型且不能为{1}", typeof(T).FullName, typeof(Delegate).FullName), nameof(T));
+
 			Win32Utility.MarshalDelegateFromFunctionPointer(out func, funcHandle, errorMessage ?? string.Format("导出函数{0}的函数指针封装为托管委托对象失败。", funcName));
 		}
 

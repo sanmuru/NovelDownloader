@@ -43,12 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IWin32Plugin.cs" />
-    <Compile Include="IWin32PluginLoader.cs" />
+    <Compile Include="IWin32PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Win32DllHandlers.cs" />
     <Compile Include="Win32Plugin.cs" />
     <Compile Include="Win32PluginHandlers.cs" />
-    <Compile Include="Win32PluginLoader.cs" />
+    <Compile Include="Win32PluginManager.cs" />
     <Compile Include="Win32Utility.cs" />
   </ItemGroup>
   <ItemGroup>

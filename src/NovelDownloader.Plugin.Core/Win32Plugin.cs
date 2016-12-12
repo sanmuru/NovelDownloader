@@ -8,6 +8,9 @@ using System.Text;
 
 namespace NovelDownloader.Plugin
 {
+	/// <summary>
+	/// Win32插件。
+	/// </summary>
 	internal class Win32Plugin : IWin32Plugin
 	{
 		/// <summary>
@@ -114,16 +117,8 @@ namespace NovelDownloader.Plugin
 				return this.PluginGuidFunc(this.PluginHandle);
 			}
 		}
-
-		/// <summary>
-		/// 初始化<see cref="Win32Plugin"/>对象。
-		/// </summary>
-		protected internal virtual void Init()
-		{
-			this.PluginHandle = this.LoadPlugin(this.Guid);
-		}
-
-		protected internal Win32Plugin(IWin32PluginLoader pluginLoader, IntPtr moduleHandle)
+		
+		protected internal Win32Plugin(IWin32PluginManager pluginManager, IntPtr moduleHandle)
 		{
 			const string PluginNameFuncName = "Plugin_Name";
 			const string PluginDisplayNameFuncName = "Plugin_DisplayName";
@@ -132,18 +127,32 @@ namespace NovelDownloader.Plugin
 			const string PluginDescriptionFuncName = "Plugin_Description";
 			const string PluginGuidFuncName = "Plugin_Guid";
 
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginNameFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginNameFuncName);
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginDisplayNameFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginDisplayNameFuncName);
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginVersionFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginVersionFuncName);
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginMinVersionFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginMinVersionFuncName);
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginDescriptionFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginDescriptionFuncName);
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginGuidFunc, pluginLoader.GetProcAddressFunc, moduleHandle, PluginGuidFuncName);
-
-			this.Init();
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginNameFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginNameFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginDisplayNameFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginDisplayNameFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginVersionFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginVersionFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginMinVersionFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginMinVersionFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginDescriptionFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginDescriptionFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginGuidFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginGuidFuncName);
 		}
 
+		/// <summary>
+		/// 加载插件。
+		/// </summary>
+		public void Load()
+		{
+			this.PluginHandle = this.LoadPlugin(this.Guid);
+		}
 
+		/// <summary>
+		/// 释放插件。
+		/// </summary>
+		public void Release()
+		{
+			if (this.PluginHandle == IntPtr.Zero) return;
 
+			this.ReleasePlugin(this.PluginHandle);
+		}
+		
 		#region IDisposable Support
 		private bool disposedValue = false; // 要检测冗余调用
 
@@ -158,7 +167,7 @@ namespace NovelDownloader.Plugin
 
 				// TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
 				// TODO: 将大型字段设置为 null。
-				this.ReleasePlugin(this.PluginHandle);
+				this.Release();
 				this.PluginHandle = IntPtr.Zero;
 
 				this.LoadPlugin = null;

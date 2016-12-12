@@ -4,7 +4,7 @@
 #define _NDTBOOK_H_
 
 #include "exports.h"
-#include <Windows.h>
+#include "NDToken.h"
 
 struct NDTBookInterface_;
 struct NDTBook_;
@@ -18,7 +18,7 @@ typedef HANDLE HNDTBook;
 
 struct NDTBookInterface_
 {
-
+	
 };
 
 struct NDTBook_

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace NovelDownloader.Plugin
 {
+	/// <summary>
+	/// 定义插件需要实现的接口。
+	/// </summary>
 	public interface IPlugin
 	{
 		/// <summary>

@@ -7,7 +7,10 @@ using System.Text;
 
 namespace NovelDownloader.Plugin
 {
-	public class Win32PluginLoader : IWin32PluginLoader
+	/// <summary>
+	/// Win32插件管理器。
+	/// </summary>
+	public class Win32PluginManager : IWin32PluginManager
 	{
 		/// <summary>
 		/// 已加载的插件字典。
@@ -22,31 +25,45 @@ namespace NovelDownloader.Plugin
 
 		[DllImport("kernal32.dll")]
 		private static extern IntPtr GetProcAddress(IntPtr hModule, string lpFileName);
-		
+
+		/// <summary>
+		/// 获取封装LoadLibrary系统API的委托对象。
+		/// </summary>
 		public LoadLibrary LoadLibraryFunc
 		{
 			get
 			{
-				return Win32PluginLoader.LoadLibrary;
+				return Win32PluginManager.LoadLibrary;
 			}
 		}
 
+		/// <summary>
+		/// 获取封装FreeLibrary系统API的委托对象。
+		/// </summary>
 		public FreeLibrary FreeLibraryFunc
 		{
 			get
 			{
-				return Win32PluginLoader.FreeLibrary;
+				return Win32PluginManager.FreeLibrary;
 			}
 		}
 
+		/// <summary>
+		/// 获取封装GetProcAddress系统API的委托对象。
+		/// </summary>
 		public GetProcAddress GetProcAddressFunc
 		{
 			get
 			{
-				return Win32PluginLoader.GetProcAddress;
+				return Win32PluginManager.GetProcAddress;
 			}
 		}
 
+		/// <summary>
+		/// 加载插件。
+		/// </summary>
+		/// <param name="pluginFileName">插件所在文件路径。</param>
+		/// <returns>指定文件中的所有插件对象的集合。</returns>
 		public IEnumerable<IPlugin> Load(string pluginFileName)
 		{
 			IntPtr hModule = this.LoadLibraryFunc(pluginFileName);
@@ -67,6 +84,7 @@ namespace NovelDownloader.Plugin
 					LoadPlugin = loadPluginFunc,
 					ReleasePlugin = releasePluginFunc
 				};
+				plugin.Load();
 				this.Plugins.Add(pluginGuid, plugin);
 				yield return plugin;
 			}
@@ -77,6 +95,10 @@ namespace NovelDownloader.Plugin
 			throw new Win32Exception();
 		}
 
+		/// <summary>
+		/// 释放指定的插件对象。
+		/// </summary>
+		/// <param name="plugin">指定的插件对象。</param>
 		public void Release(IPlugin plugin)
 		{
 			if (this.Plugins.ContainsKey(plugin.Guid))
@@ -84,7 +106,9 @@ namespace NovelDownloader.Plugin
 			
 			if (plugin is IWin32Plugin)
 			{
-				((IWin32Plugin)plugin).Dispose();
+				IWin32Plugin win32Plugin = (IWin32Plugin)plugin;
+				win32Plugin.Release();
+				win32Plugin.Dispose();
 			}
 		}
 
@@ -108,7 +132,7 @@ namespace NovelDownloader.Plugin
 		}
 
 		// TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
-		// ~Win32PluginLoader() {
+		// ~Win32pluginManager() {
 		//   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
 		//   Dispose(false);
 		// }

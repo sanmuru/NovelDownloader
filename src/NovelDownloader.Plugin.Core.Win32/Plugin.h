@@ -13,10 +13,6 @@ typedef struct Plugin_ Plugin;
 #else
 typedef const struct PluginInterface_ *Plugin;
 #endif
-
-#include "Plugin.Core.Win32.h"
-
-#undef PLUGIN_INHERITANCE
 #endif
 #include "Plugin.Core.Win32.h"
 #ifdef PLUGIN_INHERITANCE
