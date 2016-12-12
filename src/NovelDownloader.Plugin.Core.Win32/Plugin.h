@@ -77,7 +77,7 @@ public:
 #endif
 };
 
-#ifdef __cplusplus
+#if defined __cplusplus and defined C_EXPORTS
 EXTERN_C
 {
 #endif
@@ -87,7 +87,7 @@ NOVELDOWNLOADERPLUGINCOREWIN32_API Version Plugin_Version(HPLUGIN);
 NOVELDOWNLOADERPLUGINCOREWIN32_API Version Plugin_MinVersion(HPLUGIN);
 NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR Plugin_Description(HPLUGIN);
 NOVELDOWNLOADERPLUGINCOREWIN32_API GUID Plugin_Guid(HPLUGIN);
-#ifdef __cplusplus
+#if defined __cplusplus and defined C_EXPORTS
 }
 #endif
 #endif

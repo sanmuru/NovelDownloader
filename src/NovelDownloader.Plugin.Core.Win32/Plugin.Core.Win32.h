@@ -8,7 +8,7 @@
 #include "Version.h"
 #include <Windows.h>
 
-#ifdef __cplusplus
+#if defined __cplusplus and defined C_EXPORTS
 EXTERN_C
 {
 #endif
@@ -19,7 +19,7 @@ NOVELDOWNLOADERPLUGINCOREWIN32_API HPLUGIN LoadPlugin(GUID);
 NOVELDOWNLOADERPLUGINCOREWIN32_API void ReleasePlugin(HPLUGIN);
 NOVELDOWNLOADERPLUGINCOREWIN32_API GUID *GetPluginList();
 
-#ifdef __cplusplus
+#if defined __cplusplus and defined C_EXPORTS
 }
 #endif
 #endif
