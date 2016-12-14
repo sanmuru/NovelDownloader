@@ -7,9 +7,9 @@ namespace NovelDownloader.Plugin
 {
 	public delegate IntPtr DPluginLoad(Guid pluginGuid);
 	public delegate void DPluginRelease(IntPtr pluginHandle);
-	public delegate Guid[] DPluginLoadReturnsGuidArray();
+	public delegate Win32PluginManager.array_info DPluginGetPluginList();
 	
-	public delegate string DPluginInvocationReturnsString(IntPtr pluginHandle);
-	public delegate Version DPluginInvocationReturnsVersion(IntPtr pluginHandle);
+	public delegate IntPtr DPluginInvocationReturnsString(IntPtr pluginHandle);
+	public delegate IntPtr DPluginInvocationReturnsVersion(IntPtr pluginHandle);
 	public delegate Guid DPluginInvocationReturnsGuid(IntPtr pluginHandle);
 }

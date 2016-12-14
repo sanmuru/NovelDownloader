@@ -12,18 +12,17 @@ namespace ExampleNovelDownloader
 {
 	class Program
 	{
-		static readonly PluginManager pluginLoader = new PluginManager();
+		static readonly PluginManager pluginManager = new PluginManager();
 
 		static void Main(string[] args)
 		{
+			IEnumerable<IPlugin> plugins = null;
 			try
 			{
 				Exception ex = null;
-
-				var plugins = pluginLoader.Load("luoqiu.com.dll");
+				
+				plugins = pluginManager.Load("luoqiu.com.dll");
 				INovelDownloadPlugin plugin = plugins.First() as INovelDownloadPlugin;
-
-				Console.WriteLine(string.Format("{0}({1}) v{2}\n{3}", plugin.Name, plugin.DisplayName, plugin.Version, plugin.Description));
 
 				if (args.Length != 0)
 				{
@@ -67,6 +66,11 @@ namespace ExampleNovelDownloader
 				Console.WriteLine(e);
 				Console.ReadLine();
 			}
+			finally
+			{
+				if (plugins != null)
+					foreach (var plugin in plugins) pluginManager.Release(plugin);
+			}
 		}
 
 		private static void download(INovelDownloadPlugin plugin, string url)
@@ -75,6 +79,8 @@ namespace ExampleNovelDownloader
 			{
 				NDTBook bookToken;
 				if (!plugin.TryGetBookToken(new Uri(url, UriKind.RelativeOrAbsolute), out bookToken)) return;
+				
+				Console.WriteLine(string.Format("{0}({1}) v{2}\n{3}", plugin.Name, plugin.DisplayName, plugin.Version, plugin.Description));
 
 				Console.WriteLine();
 
@@ -112,6 +118,8 @@ namespace ExampleNovelDownloader
 					chapterToken.StartCreep();
 				}
 
+				Console.WriteLine();
+
 				//Console.WriteLine(sb.ToString());
 				File.WriteAllText(string.Format("{0}.txt", bookToken.Title), sb.ToString());
 			}).Start();
@@ -120,7 +128,6 @@ namespace ExampleNovelDownloader
 		private static void record(string str, StringBuilder sb)
 		{
 			Console.WriteLine(str);
-			//sb.AppendLine(str);
 		}
 	}
 }

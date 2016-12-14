@@ -5,6 +5,10 @@
 #include "exports.h"
 #include "ExampleWin32Plugin.h"
 
+#ifdef _DEBUG
+#include <stdio.h>
+#endif
+
 #define NOVELDOWNLOADERPLUGINCOREWIN32_EXPORTS
 #include <malloc.h>
 #include <Plugin.h>
@@ -17,15 +21,46 @@ EXAMPLEWIN32PLUGIN_API HPLUGIN LoadPlugin(GUID guid)
 {
 	if (true)
 	{
-		Plugin *plugin = {};
-		plugin->Name = LPCTSTR("ExampleWin32Plugin");
-		plugin->DisplayName = LPCTSTR("ExampleWin32Plugin");
-		Version version = { 1,0,0,LPCTSTR("20161212"), LPCTSTR("base") };
+		MALLOC(Plugin, plugin, sizeof(Plugin))
+		plugin->Name = TEXT("ExampleWin32Plugin");
+		plugin->DisplayName = TEXT("ExampleWin32Plugin");
+		Version version = { 1,0,0,TEXT("20161212"), TEXT("base") };
 		Version min_version = DEFAULT_VERSION;
 		plugin->Version = &version;
 		plugin->MinVersion = &min_version;
-		plugin->Description = LPCTSTR("This is a example Win32 plugin.");
+		plugin->Description = TEXT("This is an example Win32 plugin.");
 		plugin->Guid = &guid;
+
+#ifdef _DEBUG
+		wprintf_s(L"Name : %s\n", plugin->Name);
+		wprintf_s(L"DisplayName : %s\n", plugin->DisplayName);
+		wprintf_s(L"Version : V%d.%d.%d_%s_%s", 
+			plugin->Version->Major,
+			plugin->Version->Minor,
+			plugin->Version->Revision,
+			plugin->Version->Date,
+			plugin->Version->Period
+		);
+		wprintf_s(L"MinVersion : V%d.%d.%d\n", 
+			plugin->MinVersion->Major,
+			plugin->MinVersion->Minor,
+			plugin->MinVersion->Revision
+		);
+		wprintf_s(L"Description : %s\n", plugin->Description);
+		wprintf_s(L"Guid : {%x-%x-%x-%x%x-%x%x%x%x%x%x}\n", 
+			plugin->Guid->Data1, 
+			plugin->Guid->Data2, 
+			plugin->Guid->Data3, 
+			plugin->Guid->Data4[1], 
+			plugin->Guid->Data4[2], 
+			plugin->Guid->Data4[3], 
+			plugin->Guid->Data4[4], 
+			plugin->Guid->Data4[5], 
+			plugin->Guid->Data4[6], 
+			plugin->Guid->Data4[7], 
+			plugin->Guid->Data4[8]
+		);
+#endif
 
 		return (HPLUGIN)plugin;
 	}
@@ -44,12 +79,14 @@ EXAMPLEWIN32PLUGIN_API void ReleasePlugin(HPLUGIN hPlugin)
 	Plugin *plugin = FromHPLUGIN(hPlugin);
 	plugin = NULL;
 }
-
-EXAMPLEWIN32PLUGIN_API GUID *GetPluginList()
+#include <objbase.h>
+EXAMPLEWIN32PLUGIN_API array_info GetPluginList()
 {
 	MALLOC(GUID, guid_array, sizeof(GUID) * 1)
-	guid_array[0] = {1,1,1,{'1','1','1'}};
-	return guid_array;
+	CoCreateGuid(&guid_array[0]);
+	array_info array = { 1, guid_array };
+
+	return array;
 }
 
 EXAMPLEWIN32PLUGIN_API LPCTSTR Plugin_Name(HPLUGIN hPlugin)
@@ -63,14 +100,14 @@ EXAMPLEWIN32PLUGIN_API LPCTSTR Plugin_DisplayName(HPLUGIN hPlugin){
 	return plugin->DisplayName;
 }
 
-EXAMPLEWIN32PLUGIN_API Version Plugin_Version(HPLUGIN hPlugin){
+EXAMPLEWIN32PLUGIN_API HVERSION Plugin_Version(HPLUGIN hPlugin){
 	Plugin *plugin = FromHPLUGIN(hPlugin);
-	return *plugin->Version;
+	return plugin->Version;
 }
 
-EXAMPLEWIN32PLUGIN_API Version Plugin_MinVersion(HPLUGIN hPlugin){
+EXAMPLEWIN32PLUGIN_API HVERSION Plugin_MinVersion(HPLUGIN hPlugin){
 	Plugin *plugin = FromHPLUGIN(hPlugin);
-	return *plugin->MinVersion;
+	return plugin->MinVersion;
 }
 
 EXAMPLEWIN32PLUGIN_API LPCTSTR Plugin_Description(HPLUGIN hPlugin){

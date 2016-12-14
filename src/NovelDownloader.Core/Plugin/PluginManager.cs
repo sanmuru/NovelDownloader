@@ -48,19 +48,27 @@ namespace NovelDownloader.Plugin
 			if (!File.Exists(pluginFileName)) throw new FileNotFoundException("无法从指定文件中加载插件。", pluginFileName);
 
 			Assembly pluginAssembly = Assembly.LoadFrom(pluginFileName);
-			var pluginTypes =
-				from type in pluginAssembly.GetTypes()
-				where typeof(IPlugin).IsAssignableFrom(type)
-				where !type.IsAbstract
-				select type;
 
-			foreach (var pluginType in pluginTypes)
+			if (pluginAssembly != null)
 			{
-				IPlugin plugin = pluginAssembly.CreateInstance(pluginType.FullName) as IPlugin;
-				if (plugin == null) throw new InvalidOperationException("无法获取插件的实例。");
+				var pluginTypes =
+					from type in pluginAssembly.GetTypes()
+					where typeof(IPlugin).IsAssignableFrom(type)
+					where !type.IsAbstract
+					select type;
 
-				if (!this.Plugins.ContainsKey(plugin.Guid)) this.Plugins.Add(plugin.Guid, plugin);
-				yield return plugin;
+				foreach (var pluginType in pluginTypes)
+				{
+					IPlugin plugin = pluginAssembly.CreateInstance(pluginType.FullName) as IPlugin;
+					if (plugin == null) throw new InvalidOperationException("无法获取插件的实例。");
+
+					if (!this.Plugins.ContainsKey(plugin.Guid)) this.Plugins.Add(plugin.Guid, plugin);
+					yield return plugin;
+				}
+			}
+			else
+			{
+
 			}
 		}
 

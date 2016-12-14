@@ -9,7 +9,6 @@ namespace NovelDownloader
 	/// <summary>
 	/// 表示产品的版本号。
 	/// </summary>
-	[StructLayout(LayoutKind.Sequential)]
 	public class Version : IComparable<Version>, IEquatable<Version>
 	{
 		public const string BaseVersion = "base";
@@ -19,7 +18,7 @@ namespace NovelDownloader
 		public const string ReleaseVersion = "release";
 
 		public static readonly Version MinVersion = new Version(0, 0, 0, null, null);
-
+		
 		/// <summary>
 		/// 主版本号。
 		/// </summary>
