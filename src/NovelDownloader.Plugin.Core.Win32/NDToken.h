@@ -5,8 +5,8 @@
 
 #include "exports.h"
 #include "macros.h"
+#include <malloc.h>
 #include <Windows.h>
-#include <list>
 
 struct NDTokenInterface_;
 struct NDToken_;
@@ -216,7 +216,7 @@ static void i()
 }
 
 
-#ifdef __cplusplus
+#if defined __cplusplus and defined C_EXPORTS
 EXTERN_C
 {
 #endif
@@ -243,7 +243,7 @@ NOVELDOWNLOADERPLUGINCOREWIN32_API void NDToken_OnCreepStarted(HNDTOKEN, void*, 
 NOVELDOWNLOADERPLUGINCOREWIN32_API void NDToken_OnCreepFetched(HNDTOKEN, void*, void*);
 NOVELDOWNLOADERPLUGINCOREWIN32_API void NDToken_OnCreepFinished(HNDTOKEN, void*, void*);
 NOVELDOWNLOADERPLUGINCOREWIN32_API void NDToken_OnCreepErrored(HNDTOKEN, void*, void*);
-#ifdef __cplusplus
+#if defined __cplusplus and defined C_EXPORTS
 }
 #endif
 

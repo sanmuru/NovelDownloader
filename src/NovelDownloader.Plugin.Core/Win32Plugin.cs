@@ -59,7 +59,7 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				return this.PluginNameFunc(this.PluginHandle);
+				return Marshal.PtrToStringAuto(this.PluginNameFunc(this.PluginHandle));
 			}
 		}
 
@@ -70,10 +70,19 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				return this.PluginDisplayNameFunc(this.PluginHandle);
+				return Marshal.PtrToStringAuto(this.PluginDisplayNameFunc(this.PluginHandle));
 			}
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		private struct _version
+		{
+			public uint Major;
+			public uint Minor;
+			public uint Revision;
+			public IntPtr Date;
+			public IntPtr Period;
+		}
 		/// <summary>
 		/// 获取插件的版本
 		/// </summary>
@@ -81,7 +90,12 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				return this.PluginVersionFunc(this.PluginHandle);
+				_version version = (_version)Marshal.PtrToStructure(this.PluginVersionFunc(this.PluginHandle), typeof(_version));
+				Version v = new Version(version.Minor, version.Major, version.Revision,
+					Marshal.PtrToStringAuto(version.Date),
+					Marshal.PtrToStringAuto(version.Period)
+				);
+				return v;
 			}
 		}
 
@@ -92,7 +106,12 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				return this.PluginMinVersionFunc(this.PluginHandle);
+				_version version = (_version)Marshal.PtrToStructure(this.PluginMinVersionFunc(this.PluginHandle), typeof(_version));
+				Version v = new Version(version.Minor, version.Major, version.Revision,
+					Marshal.PtrToStringAuto(version.Date),
+					Marshal.PtrToStringAuto(version.Period)
+				);
+				return v;
 			}
 		}
 
@@ -103,20 +122,15 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				return this.PluginDescriptionFunc(this.PluginHandle);
+				return Marshal.PtrToStringAuto(this.PluginDescriptionFunc(this.PluginHandle));
 			}
 		}
 
+		Guid _guid;
 		/// <summary>
 		/// 获取插件的全局唯一标识符。
 		/// </summary>
-		public Guid Guid
-		{
-			get
-			{
-				return this.PluginGuidFunc(this.PluginHandle);
-			}
-		}
+		public Guid Guid { get; internal set; }
 		
 		protected internal Win32Plugin(IWin32PluginManager pluginManager, IntPtr moduleHandle)
 		{

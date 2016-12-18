@@ -3,6 +3,9 @@
 #ifndef _MACROS_H_
 #define _MACROS_H_
 
+#include <malloc.h>
+#include <Windows.h>
+
 #define EMPTY_STRING ""
 #define DEFAULT_VERSION { 0,0,0,NULL,NULL }
 #define DEFAULT_GUID { 0,0,0,{ '0','0','0','0' } }
@@ -31,7 +34,7 @@ static int INTERNAL_##struct_name##_##field_name##_capacity = 0;
 #define COLLECTION_ADD(struct_name, field_name, destinate_type, destinate_param, element_type, element_param, ADD_FUNC_NAME)\
 static int INTERNAL_##struct_name##_##field_name##_##ADD_FUNC_NAME##(destinate_type *destinate_param, element_type *element_param)\
 {\
-	if (destinate_param == NULL || element_param == NULL) return;\
+	if (destinate_param == NULL || element_param == NULL) return INTERNAL_##struct_name##_##field_name##_count;\
 \
 	if (INTERNAL_##struct_name##_##field_name##_count >= INTERNAL_##struct_name##_##field_name##_capacity)\
 	{\
@@ -54,7 +57,7 @@ static int INTERNAL_##struct_name##_##field_name##_##ADD_FUNC_NAME##(destinate_t
 #define COLLECTION_REMOVE(struct_name, field_name, destinate_type, destinate_param, element_type, element_param, REMOVE_FUNC_NAME)\
 static bool INTERNAL_##struct_name##_##field_name##_##REMOVE_FUNC_NAME##(destinate_type *destinate_param, element_type *element_param)\
 {\
-	if (destinate_param == NULL || element_param == NULL) return;\
+	if (destinate_param == NULL || element_param == NULL) return false;\
 \
 	for (int i = 0; i < INTERNAL_##struct_name##_##field_name##_count; i++)\
 	{\

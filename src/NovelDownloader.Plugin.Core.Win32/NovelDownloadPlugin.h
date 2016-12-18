@@ -53,11 +53,11 @@ static void CreateInstance_NovelDownloadPluginInterface_(NovelDownloadPluginInte
 {
 	NovelDownloadPluginInterface_ ndpi = {};
 	ndpi.reserved_inner_plugin = NULL;
-	ndpi.Name = LPCTSTR(EMPTY_STRING);
-	ndpi.DisplayName = LPCTSTR(EMPTY_STRING);
+	ndpi.Name = TEXT(EMPTY_STRING);
+	ndpi.DisplayName = TEXT(EMPTY_STRING);
 	*ndpi.Version = DEFAULT_VERSION;
 	*ndpi.MinVersion = DEFAULT_VERSION;
-	ndpi.Description = LPCTSTR(EMPTY_STRING);
+	ndpi.Description = TEXT(EMPTY_STRING);
 	*ndpi.Guid = DEFAULT_GUID;
 	ndpi.TryGetBookToken = NULL;
 
@@ -80,14 +80,14 @@ public:
 #endif
 };
 
-#ifdef __cplusplus
+#if defined __cplusplus and defined C_EXPORTS
 EXTERN_C
 {
 #endif
 typedef HANDLE HNOVELDOWNLOADPLUGIN;
 
 NOVELDOWNLOADERPLUGINCOREWIN32_API bool Plugin_TryGetBookToken(LPCTSTR, HNDTBook);
-#ifdef __cplusplus
+#if defined __cplusplus and defined C_EXPORTS
 }
 #endif
 #endif

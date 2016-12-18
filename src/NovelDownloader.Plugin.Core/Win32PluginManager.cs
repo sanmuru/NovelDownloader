@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -17,14 +18,17 @@ namespace NovelDownloader.Plugin
 		/// </summary>
 		public IDictionary<Guid, IPlugin> Plugins { get; private set; } = new Dictionary<Guid, IPlugin>();
 
-		[DllImport("kernal32.dll")]
+		[DllImport("kernel32.dll", SetLastError = true)]
 		private static extern IntPtr LoadLibrary(string lpFileName);
 		
-		[DllImport("kernal32.dll")]
+		[DllImport("kernel32.dll")]
 		private static extern void FreeLibrary(IntPtr hModule);
 
-		[DllImport("kernal32.dll")]
+		[DllImport("kernel32.dll")]
 		private static extern IntPtr GetProcAddress(IntPtr hModule, string lpFileName);
+
+		[DllImport("kernel32.dll")]
+		private static extern int GetLastError();
 
 		/// <summary>
 		/// 获取封装LoadLibrary系统API的委托对象。
@@ -64,35 +68,62 @@ namespace NovelDownloader.Plugin
 		/// </summary>
 		/// <param name="pluginFileName">插件所在文件路径。</param>
 		/// <returns>指定文件中的所有插件对象的集合。</returns>
+		/// <exception cref="ArgumentNullException">
+		/// 参数<paramref name="pluginFileName"/>为<see langword="null"/>。
+		/// </exception>
+		/// <exception cref="FileNotFoundException">
+		/// 参数<paramref name="pluginFileName"/>指定的文件路径非法或无效。
+		/// </exception>
 		public IEnumerable<IPlugin> Load(string pluginFileName)
 		{
+			if (pluginFileName == null) throw new ArgumentNullException(nameof(pluginFileName));
+			if (!File.Exists(pluginFileName)) throw new FileNotFoundException("无法从指定文件中加载插件。", pluginFileName);
+
 			IntPtr hModule = this.LoadLibraryFunc(pluginFileName);
-			if (hModule == IntPtr.Zero) throw new Win32Exception(string.Format("无法加载\"{0}\"。", pluginFileName));
-			
-			DPluginLoadReturnsGuidArray getPluginListFunc;
-			Win32Utility.MarshalDelegateFromFunctionPointer(out getPluginListFunc, this.GetProcAddressFunc, hModule, "GetPluginList", "无法获取插件列表。");
+			if (hModule == IntPtr.Zero) throw new Win32Exception(string.Format("无法加载\"{0}\"。", Path.GetFullPath(pluginFileName)), new Win32Exception(Marshal.GetLastWin32Error()));
 
 			DPluginLoad loadPluginFunc;
 			Win32Utility.MarshalDelegateFromFunctionPointer(out loadPluginFunc, this.GetProcAddressFunc, hModule, "LoadPlugin");
 			DPluginRelease releasePluginFunc;
 			Win32Utility.MarshalDelegateFromFunctionPointer(out releasePluginFunc, this.GetProcAddressFunc, hModule, "ReleasePlugin");
 
-			foreach (Guid pluginGuid in getPluginListFunc())
+			DPluginGetPluginList getPluginListFunc;
+			Win32Utility.MarshalDelegateFromFunctionPointer(out getPluginListFunc, this.GetProcAddressFunc, hModule, "GetPluginList", "无法获取插件列表。");
+
+			array_info ai = getPluginListFunc();
+			
+			foreach (Guid pluginGuid in getPluginGuids(ai.length, ai.array))
 			{
-				IWin32Plugin plugin = new Win32Plugin(this, hModule)
+				if (!this.Plugins.ContainsKey(pluginGuid))
 				{
-					LoadPlugin = loadPluginFunc,
-					ReleasePlugin = releasePluginFunc
-				};
-				plugin.Load();
-				this.Plugins.Add(pluginGuid, plugin);
-				yield return plugin;
+					IWin32Plugin plugin = new Win32Plugin(this, hModule)
+					{
+						LoadPlugin = loadPluginFunc,
+						ReleasePlugin = releasePluginFunc,
+						Guid = pluginGuid
+					};
+					plugin.Load();
+					Console.WriteLine(plugin.Name);
+					this.Plugins.Add(pluginGuid, plugin);
+					yield return plugin;
+				}
 			}
 		}
 
-		private unsafe IEnumerable<Guid> getPluginGuids(IntPtr p_guids)
+		[StructLayout(LayoutKind.Sequential)]
+		public struct array_info
 		{
-			throw new Win32Exception();
+			public int length;
+			public IntPtr array;
+		}
+		private IEnumerable<Guid> getPluginGuids(int length, IntPtr p_guids)
+		{
+			int size = Marshal.SizeOf(default(Guid));
+			Guid[] guids = new Guid[length];
+			for (int i = 0; i < length; i++)
+			{
+				yield return (Guid)Marshal.PtrToStructure(new IntPtr(p_guids.ToInt64() + size * i), typeof(Guid));
+			}
 		}
 
 		/// <summary>
