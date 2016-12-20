@@ -60,10 +60,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="MainWindow_PluginProject.cs" />
+    <Compile Include="NodeType.cs" />
     <Compile Include="PropertyNodeItem.cs" />
     <Compile Include="StartupPage.xaml.cs">
       <DependentUpon>StartupPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TokenPropertyNodeItem.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -106,6 +108,16 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\item_icon.png" />
+    <Resource Include="images\project_icon.png" />
+    <Resource Include="images\token_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\item_icon.xml" />
+    <Resource Include="images\project_icon.xml" />
+    <Resource Include="images\token_icon.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

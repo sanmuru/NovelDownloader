@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using System.Xml;
 
 namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
@@ -16,6 +17,7 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 		private string projectLocation;
 		PropertyNodeItem item = new PropertyNodeItem();
 		private string language_extension = ".cs";
+		PropertyNodeItem tokens_item;
 
 		private void Init(string name, string location)
 		{
@@ -25,38 +27,47 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 			this.pluginName = name;
 
 
-			
+
 			this.gdMain.IsEnabled = true;
 			this.gdMain.Visibility = Visibility.Visible;
 
 			PropertyNodeItem project_item = new PropertyNodeItem();
-			item.Children.Add(project_item);
+			item.Add(project_item);
 			project_item.DisplayName = this.projectName;
+			project_item.Icon = new BitmapImage(new Uri("images/project_icon.png", UriKind.Relative));
 			project_item.ToolTip = Path.Combine(this.projectLocation, this.projectName + this.language_extension);
 
-			PropertyNodeItem properties_item = new PropertyNodeItem();
-			project_item.Children.Add(properties_item);
-			properties_item.DisplayName = "Properties";
-			properties_item.ToolTip = Path.Combine(this.projectLocation, "Properties");
+			//PropertyNodeItem properties_item = new PropertyNodeItem();
+			//project_item.Add(properties_item);
+			//properties_item.DisplayName = "Properties";
+			//properties_item.ToolTip = Path.Combine(this.projectLocation, "Properties");
 
-			PropertyNodeItem assemblyinfo_item = new PropertyNodeItem();
-			properties_item.Children.Add(assemblyinfo_item);
-			assemblyinfo_item.DisplayName = "AssemblyInfo";
-			assemblyinfo_item.ToolTip = Path.Combine(this.projectLocation, "AssemblyInfo" + language_extension);
+			//PropertyNodeItem assemblyinfo_item = new PropertyNodeItem();
+			//properties_item.Add(assemblyinfo_item);
+			//assemblyinfo_item.DisplayName = "AssemblyInfo";
+			//assemblyinfo_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
+			//assemblyinfo_item.ToolTip = Path.Combine(this.projectLocation, "AssemblyInfo" + language_extension);
 
 			PropertyNodeItem references_item = new PropertyNodeItem();
-			project_item.Children.Add(references_item);
+			project_item.Add(references_item);
 			references_item.DisplayName = "引用";
 			references_item.ToolTip = "References";
 
+			tokens_item = new PropertyNodeItem();
+			project_item.Add(tokens_item);
+			tokens_item.DisplayName = "Tokens";
+			tokens_item.Icon = new BitmapImage(new Uri("images/token_icon.png", UriKind.Relative));
+			tokens_item.ToolTip = "Tokens";
 
-			this.tvNodeManager.ItemsSource = item;
+
+
+			this.tvTokenManager.ItemsSource = item;
 		}
 
 		private void generateFiles()
 		{
 			if (!Directory.Exists(this.projectLocation)) Directory.CreateDirectory(this.projectLocation);
-			
+
 			this.generateProjectFile();
 			this.generateAssemblyInfo();
 			this.generateTokens();
@@ -183,14 +194,14 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 			XmlElement documentationfile_element1 = doc.CreateElement("DocumentationFile");
 			propertygroup_element2.AppendChild(documentationfile_element1);
 			documentationfile_element1.AppendChild(doc.CreateTextNode(
-				string.Join(Path.DirectorySeparatorChar.ToString(), new[] { "bin", "Debug", this.projectName + ".XML"})
+				string.Join(Path.DirectorySeparatorChar.ToString(), new[] { "bin", "Debug", this.projectName + ".XML" })
 			));
 			#endregion
 
 			#region PropertyGroup3
 			XmlElement propertygroup_element3 = doc.CreateElement("PropertyGroup");
 			project_element.AppendChild(propertygroup_element3);
-			propertygroup_element3.SetAttribute("Condition", string.Format(" '{0}|{1}' == '{2}|{3}' ", GetMSBuildMacro("Configuration"), GetMSBuildMacro("Platform"), "Debug", "AnyCPU"));
+			propertygroup_element3.SetAttribute("Condition", string.Format(" '{0}|{1}' == '{2}|{3}' ", GetMSBuildMacro("Configuration"), GetMSBuildMacro("Platform"), "Release", "AnyCPU"));
 
 			XmlElement debugtype_element2 = doc.CreateElement("DebugType");
 			propertygroup_element3.AppendChild(debugtype_element2);
@@ -227,8 +238,8 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 			#endregion
 
 			#region ItemGroup1
-			XmlElement itemgroup1_element = doc.CreateElement("ItemGroup");
-			project_element.AppendChild(itemgroup1_element);
+			XmlElement itemgroup_element1 = doc.CreateElement("ItemGroup");
+			project_element.AppendChild(itemgroup_element1);
 
 			var assemblies = new[]
 			{
@@ -247,7 +258,7 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 			}).Select(reference =>
 			{
 				XmlElement reference_item = doc.CreateElement("Reference");
-				itemgroup1_element.AppendChild(reference_item);
+				itemgroup_element1.AppendChild(reference_item);
 				reference_item.SetAttribute("Include", reference);
 
 				return reference_item;
@@ -265,6 +276,24 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 				assembly_element.AppendChild(hintpath_element);
 				hintpath_element.AppendChild(doc.CreateTextNode(Path.GetDirectoryName(assemblies[i].EscapedCodeBase)));
 			}
+			#endregion
+
+			#region ItemGroup2
+			XmlElement itemgroup_element2 = doc.CreateElement("ItemGroup");
+			project_element.AppendChild(itemgroup_element2);
+
+			var compile_includes = new[]
+			{
+				Path.Combine("Properties", "AssemblyInfo" + this.language_extension)
+			}.Concat(
+				this.tokens_item.Select(token => token.DisplayName + this.language_extension)
+			).ToList();
+			compile_includes.ForEach(compile_include =>
+			{
+				XmlElement compile_item = doc.CreateElement("Compile");
+				itemgroup_element2.AppendChild(compile_item);
+				compile_item.SetAttribute("Include", compile_include);
+			});
 			#endregion
 
 			#region Import2
@@ -286,7 +315,7 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 		string pluginCompany = "Sam Lu";
 		string pluginCopyright = string.Format("Copyright © Sam Lu 1997 - 2016");
 		string pluginTrademark = string.Format("Copyright ® Sam Lu 1997 - 2016");
-		Version pluginVersion = new Version(0,0,0,0);
+		Version pluginVersion = new Version(0, 0, 0, 0);
 
 		private void generateAssemblyInfo()
 		{
@@ -324,26 +353,6 @@ using System.Windows;
 //请将此类型的 ComVisible 特性设置为 true。
 [assembly: ComVisible(false)]
 
-//若要开始生成可本地化的应用程序，请
-//<PropertyGroup> 中的 .csproj 文件中
-//例如，如果您在源文件中使用的是美国英语，
-//使用的是美国英语，请将 <UICulture> 设置为 en-US。  然后取消
-//对以下 NeutralResourceLanguage 特性的注释。  更新
-//以下行中的“en-US”以匹配项目文件中的 UICulture 设置。
-
-//[assembly: NeutralResourcesLanguage(""en-US"", UltimateResourceFallbackLocation.Satellite)]
-
-
-[assembly: ThemeInfo(
-	ResourceDictionaryLocation.None, //主题特定资源词典所处位置
-									 //(当资源未在页面
-									 //或应用程序资源字典中找到时使用)
-	ResourceDictionaryLocation.SourceAssembly //常规资源词典所处位置
-											  //(当资源未在页面
-											  //、应用程序或任何主题专用资源字典中找到时使用)
-)]
-
-
 // 程序集的版本信息由下列四个值组成: 
 //
 //      主版本
@@ -371,8 +380,96 @@ using System.Windows;
 
 		private void generateTokens()
 		{
-			//throw new NotImplementedException();
+			foreach (var item in this.tokens_item.OfType<TokenPropertyNodeItem>())
+			{
+				string path = Path.Combine(this.projectLocation, string.Format("{0}{1}", item.DisplayName, this.language_extension));
+#if !DEBUG
+				if (File.Exists(path))
+				{
+					if (MessageBox.Show(string.Format("文件 \"{0}\" 已存在，是否覆盖它？", path)) == MessageBoxResult.No) return;
+				}
+#endif
+
+				string contents = string.Empty;
+				File.WriteAllText(path, contents);
+			}
 		}
 
+
+		private void addToken(TokenType type, string name, Dictionary<string, string> data)
+		{
+			switch (type)
+			{
+				case TokenType.Book:
+					this.addBookToken(name);
+					break;
+				case TokenType.Volumn:
+					this.addVolumeToken(name);
+					break;
+				case TokenType.Chapter:
+					this.addChapterToken(name);
+					break;
+				case TokenType.Text:
+					this.addTextToken(name);
+					break;
+				case TokenType.Image:
+					this.addImageToken(name);
+					break;
+				case TokenType.Unknown:
+					break;
+				default:
+					throw new InvalidOperationException();
+			}
+		}
+
+		private void addBookToken(string name)
+		{
+			TokenPropertyNodeItem booktoken_item = new TokenPropertyNodeItem();
+			booktoken_item.DisplayName = name;
+			booktoken_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
+			booktoken_item.ToolTip = Path.Combine(this.projectLocation, name + this.language_extension);
+			booktoken_item.TokenType = TokenType.Book;
+			this.tokens_item.Add(booktoken_item);
+		}
+
+		private void addVolumeToken(string name)
+		{
+			TokenPropertyNodeItem volumetoken_item = new TokenPropertyNodeItem();
+			volumetoken_item.DisplayName = name;
+			volumetoken_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
+			volumetoken_item.ToolTip = Path.Combine(this.projectLocation, name + this.language_extension);
+			volumetoken_item.TokenType = TokenType.Volumn;
+			this.tokens_item.Add(volumetoken_item);
+		}
+
+		private void addChapterToken(string name)
+		{
+			TokenPropertyNodeItem chaptertoken_item = new TokenPropertyNodeItem();
+			chaptertoken_item.DisplayName = name;
+			chaptertoken_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
+			chaptertoken_item.ToolTip = Path.Combine(this.projectLocation, name + this.language_extension);
+			chaptertoken_item.TokenType = TokenType.Chapter;
+			this.tokens_item.Add(chaptertoken_item);
+		}
+
+		private void addTextToken(string name)
+		{
+			TokenPropertyNodeItem texttoken_item = new TokenPropertyNodeItem();
+			texttoken_item.DisplayName = name;
+			texttoken_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
+			texttoken_item.ToolTip = Path.Combine(this.projectLocation, name + this.language_extension);
+			texttoken_item.TokenType = TokenType.Text;
+			this.tokens_item.Add(texttoken_item);
+		}
+
+		private void addImageToken(string name)
+		{
+			TokenPropertyNodeItem imagetoken_item = new TokenPropertyNodeItem();
+			imagetoken_item.DisplayName = name;
+			imagetoken_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
+			imagetoken_item.ToolTip = Path.Combine(this.projectLocation, name + this.language_extension);
+			imagetoken_item.TokenType = TokenType.Image;
+			this.tokens_item.Add(imagetoken_item);
+		}
 	}
 }

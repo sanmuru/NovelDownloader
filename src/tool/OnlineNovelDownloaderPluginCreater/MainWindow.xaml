@@ -27,12 +27,12 @@
             <MenuItem Header="项目(_P)">
                 <MenuItem Header="生成(_B)" Click="miBuild_Click"></MenuItem>
                 <Separator></Separator>
-                <MenuItem Header="添加节点...(_B)"></MenuItem>
-                <MenuItem Header="添加书籍节点(_B)"></MenuItem>
-                <MenuItem Header="添加卷节点(_V)"></MenuItem>
-                <MenuItem Header="添加章节点(_C)"></MenuItem>
-                <MenuItem Header="添加文本节点(_T)"></MenuItem>
-                <MenuItem Header="添加图片节点(_I)"></MenuItem>
+                <MenuItem x:Name="miAddToken" Header="添加节点...(_T)" Click="miAddToken_Click"></MenuItem>
+                <MenuItem x:Name="miAddBookToken" Header="添加书籍节点(_B)" Click="miAddToken_Click"/>
+                <MenuItem x:Name="miAddVolumeToken" Header="添加卷节点(_V)" Click="miAddToken_Click"></MenuItem>
+                <MenuItem x:Name="miAddChapterToken" Header="添加章节点(_C)" Click="miAddToken_Click"></MenuItem>
+                <MenuItem x:Name="miAddTextToken" Header="添加文本节点(_T)" Click="miAddToken_Click"></MenuItem>
+                <MenuItem x:Name="miAddImageToken" Header="添加图片节点(_I)" Click="miAddToken_Click"></MenuItem>
             </MenuItem>
             <MenuItem Header="工具(_T)">
                 <MenuItem Header="选项(_O)"></MenuItem>
@@ -113,23 +113,25 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Grid.Resources>
-                            <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem">
-                                <Setter Property="Padding" Value="2.5"></Setter>
-                            </Style>
-                        </Grid.Resources>
 
                         <Label Grid.Row="0" Background="LightGray">节点管理器</Label>
 
-                        <TreeView x:Name="tvNodeManager" Grid.Row="1" BorderBrush="Transparent">
+                        <TreeView x:Name="tvTokenManager" Grid.Row="1" BorderBrush="Transparent">
                             <TreeView.ItemTemplate>
                                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}">
                                     <StackPanel Orientation="Horizontal" Margin="2.5">
-                                        <Image VerticalAlignment="Center" Source="{Binding Icon}" Width="16" Height="16" Margin="0,0,2,2"></Image>
-                                        <TextBlock VerticalAlignment="Center" Text="{Binding DisplayName}"></TextBlock>
+                                        <Image VerticalAlignment="Center" Source="{Binding Icon}" Width="20" Height="20"></Image>
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding DisplayName}" Margin="2,0,0,0"></TextBlock>
                                         <StackPanel.ToolTip>
                                             <TextBlock VerticalAlignment="Center" Text="{Binding ToolTip}" TextWrapping="Wrap" MaxWidth="200" ></TextBlock>
                                         </StackPanel.ToolTip>
+                                        <StackPanel.ContextMenu>
+                                            <ContextMenu ItemsSource="{Binding Path=ContextMenu}">
+                                                <ContextMenu.ItemTemplate>
+                                                    <HierarchicalDataTemplate></HierarchicalDataTemplate>
+                                                </ContextMenu.ItemTemplate>
+                                            </ContextMenu>
+                                        </StackPanel.ContextMenu>
                                     </StackPanel>
                                 </HierarchicalDataTemplate>
                             </TreeView.ItemTemplate>

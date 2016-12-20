@@ -342,5 +342,35 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 		{
 			this.generateFiles();
 		}
+
+		int[] token_NOs = new int[Enum.GetValues(typeof(TokenType)).Length];
+		private void miAddToken_Click(object sender, RoutedEventArgs e)
+		{
+			if (this.miAddToken == sender)
+			{
+				this.addToken(TokenType.Unknown, string.Format("Token{0}", ++this.token_NOs[(int)TokenType.Unknown]), null);
+			}
+			else if (this.miAddBookToken == sender)
+			{
+				this.addBookToken(string.Format("BookToken{0}", ++this.token_NOs[(int)TokenType.Book]));
+			}
+			else if (this.miAddVolumeToken == sender)
+			{
+				this.addVolumeToken(string.Format("VolumeToken{0}", ++this.token_NOs[(int)TokenType.Volumn]));
+			}
+			else if (this.miAddChapterToken == sender)
+			{
+				this.addChapterToken(string.Format("ChapterToken{0}", ++this.token_NOs[(int)TokenType.Chapter]));
+			}
+			else if (this.miAddTextToken == sender)
+			{
+				this.addTextToken(string.Format("TextToken{0}", ++this.token_NOs[(int)TokenType.Text]));
+			}
+			else if (this.miAddImageToken == sender)
+			{
+				this.addImageToken(string.Format("ImageToken{0}", ++this.token_NOs[(int)TokenType.Image]));
+			}
+			else throw new InvalidOperationException();
+        }
 	}
 }
