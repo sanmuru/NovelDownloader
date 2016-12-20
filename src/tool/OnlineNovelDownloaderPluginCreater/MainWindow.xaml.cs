@@ -16,13 +16,23 @@ using System.Windows.Shapes;
 using HtmlAgilityPack;
 using SamLu.Web;
 
-namespace OnlineNovelDownloaderPluginCreater
+namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 {
 	/// <summary>
 	/// MainWindow.xaml 的交互逻辑
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		/// <summary>
+		/// 表示全部保存的<see cref="RoutedUICommand"/>对象。
+		/// </summary>
+		private static readonly RoutedUICommand SaveAllCommand = new RoutedUICommand("Save All", nameof(SaveAllCommand), typeof(MainWindow), 
+			new InputGestureCollection()
+			{
+				new KeyGesture(Key.S, ModifierKeys.Control | ModifierKeys.Shift)
+			}
+		);
+		
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -317,6 +327,20 @@ namespace OnlineNovelDownloaderPluginCreater
 				}
 				else throw new NotSupportedException();
 			}
+		}
+
+		private void Window_Loaded(object sender, RoutedEventArgs e)
+		{
+			StartupPage page = new StartupPage();
+			if (page.ShowDialog() == true)
+			{
+				this.Init(page.Name, page.Location);
+			}
+		}
+
+		private void miBuild_Click(object sender, RoutedEventArgs e)
+		{
+			this.generateFiles();
 		}
 	}
 }
