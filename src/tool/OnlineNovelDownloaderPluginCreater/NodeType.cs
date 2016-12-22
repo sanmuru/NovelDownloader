@@ -9,7 +9,7 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 	{
 		Unknown = 0,
 		Book,
-		Volumn,
+		Volume,
 		Chapter,
 		Text,
 		Image,

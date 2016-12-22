@@ -59,13 +59,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddTokenWindow.xaml.cs">
+      <DependentUpon>AddTokenWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow_PluginProject.cs" />
     <Compile Include="NodeType.cs" />
-    <Compile Include="PropertyNodeItem.cs" />
-    <Compile Include="StartupPage.xaml.cs">
-      <DependentUpon>StartupPage.xaml</DependentUpon>
+    <Compile Include="PropertyNodeItem\ProjectPropertyNodeItem.cs" />
+    <Compile Include="PropertyNodeItem\PropertyNodeItem.cs" />
+    <Compile Include="PropertyNodeItem\TokenTemplateInfoPropertyNodeItem.cs" />
+    <Compile Include="StartupWindow.xaml.cs">
+      <DependentUpon>StartupWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TokenPropertyNodeItem.cs" />
+    <Compile Include="PropertyNodeItem\TokenProjectPropertyNodeItem.cs" />
+    <Page Include="AddTokenWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -78,7 +87,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="StartupPage.xaml">
+    <Page Include="StartupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

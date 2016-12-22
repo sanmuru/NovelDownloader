@@ -120,18 +120,11 @@
                             <TreeView.ItemTemplate>
                                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}">
                                     <StackPanel Orientation="Horizontal" Margin="2.5">
-                                        <Image VerticalAlignment="Center" Source="{Binding Icon}" Width="20" Height="20"></Image>
+                                        <Image VerticalAlignment="Center" Source="{Binding Icon}" Width="24" Height="24"></Image>
                                         <TextBlock VerticalAlignment="Center" Text="{Binding DisplayName}" Margin="2,0,0,0"></TextBlock>
                                         <StackPanel.ToolTip>
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding ToolTip}" TextWrapping="Wrap" MaxWidth="200" ></TextBlock>
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding ToolTip}" TextWrapping="Wrap" MaxWidth="250" ></TextBlock>
                                         </StackPanel.ToolTip>
-                                        <StackPanel.ContextMenu>
-                                            <ContextMenu ItemsSource="{Binding Path=ContextMenu}">
-                                                <ContextMenu.ItemTemplate>
-                                                    <HierarchicalDataTemplate></HierarchicalDataTemplate>
-                                                </ContextMenu.ItemTemplate>
-                                            </ContextMenu>
-                                        </StackPanel.ContextMenu>
                                     </StackPanel>
                                 </HierarchicalDataTemplate>
                             </TreeView.ItemTemplate>

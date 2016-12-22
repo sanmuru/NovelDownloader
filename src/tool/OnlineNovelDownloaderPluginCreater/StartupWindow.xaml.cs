@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 {
 	/// <summary>
-	/// StartupPage.xaml 的交互逻辑
+	/// StartupWindow.xaml 的交互逻辑
 	/// </summary>
-	public partial class StartupPage : Window
+	public partial class StartupWindow : Window
 	{
-		public string Name
+		public string ProjectName
 		{
 			get
 			{
@@ -28,7 +28,7 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 			}
 		}
 
-		public string Location
+		public string ProjectLocation
 		{
 			get
 			{
@@ -36,7 +36,7 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 			}
 		}
 
-		public StartupPage()
+		public StartupWindow()
 		{
 			InitializeComponent();
 		}

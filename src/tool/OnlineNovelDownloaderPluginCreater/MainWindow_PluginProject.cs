@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Xml;
+using NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater.PropertyNodeItem;
 
 namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 {
@@ -15,9 +16,9 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 	{
 		private string projectName;
 		private string projectLocation;
-		PropertyNodeItem item = new PropertyNodeItem();
+		ProjectPropertyNodeItem item = new ProjectPropertyNodeItem();
 		private string language_extension = ".cs";
-		PropertyNodeItem tokens_item;
+		ProjectPropertyNodeItem tokens_item;
 
 		private void Init(string name, string location)
 		{
@@ -31,7 +32,7 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 			this.gdMain.IsEnabled = true;
 			this.gdMain.Visibility = Visibility.Visible;
 
-			PropertyNodeItem project_item = new PropertyNodeItem();
+			ProjectPropertyNodeItem project_item = new ProjectPropertyNodeItem();
 			item.Add(project_item);
 			project_item.DisplayName = this.projectName;
 			project_item.Icon = new BitmapImage(new Uri("images/project_icon.png", UriKind.Relative));
@@ -48,12 +49,12 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 			//assemblyinfo_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
 			//assemblyinfo_item.ToolTip = Path.Combine(this.projectLocation, "AssemblyInfo" + language_extension);
 
-			PropertyNodeItem references_item = new PropertyNodeItem();
+			ProjectPropertyNodeItem references_item = new ProjectPropertyNodeItem();
 			project_item.Add(references_item);
 			references_item.DisplayName = "引用";
 			references_item.ToolTip = "References";
 
-			tokens_item = new PropertyNodeItem();
+			tokens_item = new ProjectPropertyNodeItem();
 			project_item.Add(tokens_item);
 			tokens_item.DisplayName = "Tokens";
 			tokens_item.Icon = new BitmapImage(new Uri("images/token_icon.png", UriKind.Relative));
@@ -286,7 +287,7 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 			{
 				Path.Combine("Properties", "AssemblyInfo" + this.language_extension)
 			}.Concat(
-				this.tokens_item.Select(token => token.DisplayName + this.language_extension)
+				this.tokens_item.Select(token => ((ProjectPropertyNodeItem)token).DisplayName + this.language_extension)
 			).ToList();
 			compile_includes.ForEach(compile_include =>
 			{
@@ -380,7 +381,7 @@ using System.Windows;
 
 		private void generateTokens()
 		{
-			foreach (var item in this.tokens_item.OfType<TokenPropertyNodeItem>())
+			foreach (var item in this.tokens_item.OfType<TokenProjectPropertyNodeItem>())
 			{
 				string path = Path.Combine(this.projectLocation, string.Format("{0}{1}", item.DisplayName, this.language_extension));
 #if !DEBUG
@@ -403,7 +404,7 @@ using System.Windows;
 				case TokenType.Book:
 					this.addBookToken(name);
 					break;
-				case TokenType.Volumn:
+				case TokenType.Volume:
 					this.addVolumeToken(name);
 					break;
 				case TokenType.Chapter:
@@ -424,7 +425,7 @@ using System.Windows;
 
 		private void addBookToken(string name)
 		{
-			TokenPropertyNodeItem booktoken_item = new TokenPropertyNodeItem();
+			TokenProjectPropertyNodeItem booktoken_item = new TokenProjectPropertyNodeItem();
 			booktoken_item.DisplayName = name;
 			booktoken_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
 			booktoken_item.ToolTip = Path.Combine(this.projectLocation, name + this.language_extension);
@@ -434,17 +435,17 @@ using System.Windows;
 
 		private void addVolumeToken(string name)
 		{
-			TokenPropertyNodeItem volumetoken_item = new TokenPropertyNodeItem();
+			TokenProjectPropertyNodeItem volumetoken_item = new TokenProjectPropertyNodeItem();
 			volumetoken_item.DisplayName = name;
 			volumetoken_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
 			volumetoken_item.ToolTip = Path.Combine(this.projectLocation, name + this.language_extension);
-			volumetoken_item.TokenType = TokenType.Volumn;
+			volumetoken_item.TokenType = TokenType.Volume;
 			this.tokens_item.Add(volumetoken_item);
 		}
 
 		private void addChapterToken(string name)
 		{
-			TokenPropertyNodeItem chaptertoken_item = new TokenPropertyNodeItem();
+			TokenProjectPropertyNodeItem chaptertoken_item = new TokenProjectPropertyNodeItem();
 			chaptertoken_item.DisplayName = name;
 			chaptertoken_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
 			chaptertoken_item.ToolTip = Path.Combine(this.projectLocation, name + this.language_extension);
@@ -454,7 +455,7 @@ using System.Windows;
 
 		private void addTextToken(string name)
 		{
-			TokenPropertyNodeItem texttoken_item = new TokenPropertyNodeItem();
+			TokenProjectPropertyNodeItem texttoken_item = new TokenProjectPropertyNodeItem();
 			texttoken_item.DisplayName = name;
 			texttoken_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
 			texttoken_item.ToolTip = Path.Combine(this.projectLocation, name + this.language_extension);
@@ -464,7 +465,7 @@ using System.Windows;
 
 		private void addImageToken(string name)
 		{
-			TokenPropertyNodeItem imagetoken_item = new TokenPropertyNodeItem();
+			TokenProjectPropertyNodeItem imagetoken_item = new TokenProjectPropertyNodeItem();
 			imagetoken_item.DisplayName = name;
 			imagetoken_item.Icon = new BitmapImage(new Uri("images/item_icon.png", UriKind.Relative));
 			imagetoken_item.ToolTip = Path.Combine(this.projectLocation, name + this.language_extension);
