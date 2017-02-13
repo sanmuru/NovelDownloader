@@ -20,15 +20,16 @@ namespace NovelDownloader.Plugin.luoqiu.com
 
 		public Version MinVersion { get; private set; } = Version.MinVersion;
 
-		public Version Version { get; private set; } = new Version(0, 0);
+		public Version Version { get; private set; } = new Version(1, 0, 0, DateTime.Now.ToString("yyyyMMdd"), Version.BetaVersion);
 
 		public string Description { get; private set; } = "提供落秋中文(luoqiu.com)小说下载。";
 
+		internal static readonly Guid _guid = new Guid("ef191ee4-fbb1-4a0c-8a54-37b829107cbf");
 		public Guid Guid
 		{
 			get
 			{
-				return new Guid("ef191ee4-fbb1-4a0c-8a54-37b829107cbf");
+				return LuoQiu_NovelDownloader._guid;
 			}
 		}
 
@@ -93,9 +94,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 			catch (Exception)
 			{
 				bookToken = null;
-#if DEBUG
-				throw;
-#endif
+
 				return false;
 			}
 		}

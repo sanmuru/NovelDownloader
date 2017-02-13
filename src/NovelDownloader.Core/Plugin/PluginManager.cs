@@ -7,12 +7,20 @@ using System.Text;
 
 namespace NovelDownloader.Plugin
 {
-	public class PluginLoader : IPluginLoader
+	/// <summary>
+	/// 插件管理器。
+	/// </summary>
+	public class PluginManager : IPluginManager
 	{
 		/// <summary>
 		/// 已加载的插件字典。
 		/// </summary>
 		public IDictionary<Guid, IPlugin> Plugins { get; private set; } = new Dictionary<Guid, IPlugin>();
+
+		/// <summary>
+		/// 初始化<see cref="PluginManager"/>对象。
+		/// </summary>
+		public PluginManager() { }
 
 		/// <summary>
 		/// 从指定路径的文件中加载插件，并返回所有加载的插件。
@@ -40,20 +48,38 @@ namespace NovelDownloader.Plugin
 			if (!File.Exists(pluginFileName)) throw new FileNotFoundException("无法从指定文件中加载插件。", pluginFileName);
 
 			Assembly pluginAssembly = Assembly.LoadFrom(pluginFileName);
-			var pluginTypes =
-				from type in pluginAssembly.GetTypes()
-				where typeof(IPlugin).IsAssignableFrom(type)
-				where !type.IsAbstract
-				select type;
 
-			foreach (var pluginType in pluginTypes)
+			if (pluginAssembly != null)
 			{
-				IPlugin plugin = pluginAssembly.CreateInstance(pluginType.FullName) as IPlugin;
-				if (plugin == null) throw new InvalidOperationException("无法获取插件的实例。");
+				var pluginTypes =
+					from type in pluginAssembly.GetTypes()
+					where typeof(IPlugin).IsAssignableFrom(type)
+					where !type.IsAbstract
+					select type;
 
-				if (!this.Plugins.ContainsKey(plugin.Guid)) this.Plugins.Add(plugin.Guid, plugin);
-				yield return plugin;
+				foreach (var pluginType in pluginTypes)
+				{
+					IPlugin plugin = pluginAssembly.CreateInstance(pluginType.FullName) as IPlugin;
+					if (plugin == null) throw new InvalidOperationException("无法获取插件的实例。");
+
+					if (!this.Plugins.ContainsKey(plugin.Guid)) this.Plugins.Add(plugin.Guid, plugin);
+					yield return plugin;
+				}
 			}
+			else
+			{
+
+			}
+		}
+
+		/// <summary>
+		/// 释放指定的插件对象。
+		/// </summary>
+		/// <param name="plugin">指定的插件对象</param>
+		public void Release(IPlugin plugin)
+		{
+			if (this.Plugins.ContainsKey(plugin.Guid))
+				this.Plugins.Remove(plugin.Guid);
 		}
 	}
 }

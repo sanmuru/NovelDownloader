@@ -8,36 +8,23 @@
 #include "Version.h"
 #include <Windows.h>
 
-struct PluginInterface_;
-struct Plugin_;
-
-#ifdef _NOVEL_DOWNLOAD_PLUGIN_H_
-#ifdef __cplusplus
-typedef struct NovelDownloadPlugin_ Plugin;
-#else
-typedef const struct NovelDownloadPluginInterface_ *Plugin;
-#endif
-#else
-#ifdef _PLUGIN_H_
-#ifdef __cplusplus
-typedef struct Plugin_ Plugin;
-#else
-typedef const struct PluginInterface_ *Plugin;
-#endif
-#endif
-#endif
-
-#ifdef __cplusplus
+#if defined __cplusplus and defined C_EXPORTS
 EXTERN_C
 {
 #endif
 
 typedef HANDLE HPLUGIN;
 
-NOVELDOWNLOADERPLUGINCOREWIN32_API HPLUGIN LoadPlugin();
+NOVELDOWNLOADERPLUGINCOREWIN32_API HPLUGIN LoadPlugin(GUID);
 NOVELDOWNLOADERPLUGINCOREWIN32_API void ReleasePlugin(HPLUGIN);
 
-#ifdef __cplusplus
+typedef struct {
+	int count;
+	void *array;
+} array_info;
+NOVELDOWNLOADERPLUGINCOREWIN32_API array_info GetPluginList();
+
+#if defined __cplusplus and defined C_EXPORTS
 }
 #endif
 #endif

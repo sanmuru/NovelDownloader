@@ -2,11 +2,25 @@
 
 #ifndef _NOVEL_DOWNLOAD_PLUGIN_H_
 #define _NOVEL_DOWNLOAD_PLUGIN_H_
-#include "Plugin.h"
-#include "NDTBook.h"
 
 struct NovelDownloadPluginInterface_;
 struct NovelDownloadPlugin_;
+
+#ifndef PLUGIN_INHERITANCE
+#define PLUGIN_INHERITANCE
+#ifdef __cplusplus
+typedef struct NovelDownloadPlugin_ NovelDownloadPlugin;
+#else
+typedef const struct NovelDownloadPluginInterface_ *NovelDownloadPlugin;
+#endif
+
+typedef NovelDownloadPlugin Plugin;
+#endif
+#include "Plugin.h"
+#ifdef PLUGIN_INHERITANCE
+#undef PLUGIN_INHERITANCE
+#endif
+#include "NDTBook.h"
 
 static void CreateInstance_NovelDownloadPluginInterface_(NovelDownloadPluginInterface_*);
 struct NovelDownloadPluginInterface_
@@ -39,11 +53,11 @@ static void CreateInstance_NovelDownloadPluginInterface_(NovelDownloadPluginInte
 {
 	NovelDownloadPluginInterface_ ndpi = {};
 	ndpi.reserved_inner_plugin = NULL;
-	ndpi.Name = LPCTSTR(EMPTY_STRING);
-	ndpi.DisplayName = LPCTSTR(EMPTY_STRING);
+	ndpi.Name = TEXT(EMPTY_STRING);
+	ndpi.DisplayName = TEXT(EMPTY_STRING);
 	*ndpi.Version = DEFAULT_VERSION;
 	*ndpi.MinVersion = DEFAULT_VERSION;
-	ndpi.Description = LPCTSTR(EMPTY_STRING);
+	ndpi.Description = TEXT(EMPTY_STRING);
 	*ndpi.Guid = DEFAULT_GUID;
 	ndpi.TryGetBookToken = NULL;
 
@@ -55,20 +69,25 @@ struct NovelDownloadPlugin_
 	: public Plugin_
 #endif
 {
+#ifdef __cplusplus
+public:
 	void *reserved_TryGetBookToken;
 
 	bool TryGetBookToken(LPCTSTR, NDTBook*);  // 尝试获取位于指定位置的小说标签。
 
 	NovelDownloadPlugin_();
 	~NovelDownloadPlugin_();
+#endif
 };
 
-#ifdef __cplusplus
+#if defined __cplusplus and defined C_EXPORTS
 EXTERN_C
 {
 #endif
+typedef HANDLE HNOVELDOWNLOADPLUGIN;
+
 NOVELDOWNLOADERPLUGINCOREWIN32_API bool Plugin_TryGetBookToken(LPCTSTR, HNDTBook);
-#ifdef __cplusplus
+#if defined __cplusplus and defined C_EXPORTS
 }
 #endif
 #endif

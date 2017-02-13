@@ -19,7 +19,8 @@ namespace NovelDownloader.Plugin
 	/// <summary>
 	/// 封装GetProcAddress系统API的委托类型。
 	/// </summary>
+	/// <param name="hModule">Win32Dll文件的模块句柄。</param>
 	/// <param name="lpFuncName">Win32Dll中导出函数的名称。</param>
 	/// <returns>Win32Dll中导出函数的地址。</returns>
-	public delegate IntPtr GetProcAddress(string lpFuncName);
+	public delegate IntPtr GetProcAddress(IntPtr hModule, string lpFuncName);
 }

@@ -19,8 +19,8 @@ namespace NovelDownloader.Plugin.luoqiu.com
 
 		public ChapterToken(Uri uri) : this(null, null)
 		{
-			string url = uri.ToString();
 			if (uri == null) throw new ArgumentNullException(nameof(uri));
+			string url = uri.ToString();
 
 			Match m = ChapterToken.ChapterUrlRegex.Match(url);
 			if (m.Success)
@@ -31,7 +31,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		}
 
 		/// <summary>
-		/// 初始化<see cref="NDTChapter"/>对象。
+		/// 初始化<see cref="ChapterToken"/>对象。
 		/// </summary>
 		public ChapterToken() : base() { }
 

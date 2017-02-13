@@ -68,8 +68,8 @@ namespace NovelDownloader.Plugin.luoqiu.com
 			}
 			else
 				throw new InvalidOperationException(
-				  "无法解析URL。",
-				  new ArgumentOutOfRangeException(nameof(url), url, "URL不符合格式。"));
+					"无法解析URL。",
+					new ArgumentOutOfRangeException(nameof(url), url, "URL不符合格式。"));
 
 
 
