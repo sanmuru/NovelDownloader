@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using NovelDownloader.Token;
 using System.Web;
+using NovelDownloader.Token;
 using SamLu.Web;
 
-namespace NovelDownloader.Plugin.luoqiu.com
+namespace NovelDownloader.Plugin._81zw.com
 {
 	public class ChapterToken : NDTChapter
 	{
-		internal static readonly Regex ChapterUrlRegex = new Regex(@"http://www.luoqiu.com/read/(?<BookUnicode>\d*)/(?<ChapterUnicode>\d*).html", RegexOptions.Compiled);
+		internal static readonly Regex ChapterUrlRegex = new Regex(@"http://www.81zw.com/book/(?<BookUnicode>\d*)/(?<ChapterUnicode>\d*).html", RegexOptions.Compiled);
 
 		public override string Type { get; protected set; } = "章节";
 
@@ -87,14 +87,14 @@ namespace NovelDownloader.Plugin.luoqiu.com
 				return this.CanCreep((int)(object)data);
 			else
 				throw new NotSupportedException(
-					string.Format("不支持的数据类型{0}", typeof(TData).FullName), 
+					string.Format("不支持的数据类型{0}", typeof(TData).FullName),
 					new ArgumentException(
 						string.Format("参数的类型为{1}。", typeof(TData).FullName),
 						nameof(data)
 					)
 				);
 		}
-		
+
 		private string Creep()
 		{
 			const string SEPERATOR = "<br />";

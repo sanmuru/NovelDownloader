@@ -16,13 +16,15 @@ namespace ExampleNovelDownloader
 
 		static void Main(string[] args)
 		{
-			IEnumerable<IPlugin> plugins = null;
+			IEnumerable<INovelDownloadPlugin> plugins = Enumerable.Empty<INovelDownloadPlugin>();
 			try
 			{
 				Exception ex = null;
-				
-				plugins = pluginManager.Load("luoqiu.com.dll");
-				INovelDownloadPlugin plugin = plugins.First() as INovelDownloadPlugin;
+
+				pluginManager.Load("luoqiu.com.dll").ToArray();
+				pluginManager.Load("81zw.com.dll").ToArray();
+
+				plugins = pluginManager.Plugins.Select(pair => pair.Value).OfType<INovelDownloadPlugin>();
 
 				if (args.Length != 0)
 				{
@@ -30,7 +32,13 @@ namespace ExampleNovelDownloader
 					{
 						try
 						{
-							download(plugin, arg);
+							NDTBook bookToken;
+							foreach (var plugin in plugins)
+							{
+								if (!plugin.TryGetBookToken(new Uri(arg), out bookToken)) continue;
+
+								download(bookToken);
+							}
 						}
 						catch (Exception e)
 						{
@@ -50,7 +58,13 @@ namespace ExampleNovelDownloader
 
 						try
 						{
-							download(plugin, url);
+							NDTBook bookToken;
+							foreach (var plugin in plugins)
+							{
+								if (!plugin.TryGetBookToken(new Uri(url, UriKind.RelativeOrAbsolute), out bookToken)) continue;
+
+								download(bookToken);
+							}
 						}
 						catch (Exception e)
 						{
@@ -73,61 +87,61 @@ namespace ExampleNovelDownloader
 			}
 		}
 
-		private static void download(INovelDownloadPlugin plugin, string url)
+		private static void download(NDTBook bookToken)
 		{
 			new Thread(() =>
 			{
-				NDTBook bookToken;
-				if (!plugin.TryGetBookToken(new Uri(url, UriKind.RelativeOrAbsolute), out bookToken)) return;
-				
-				Console.WriteLine(string.Format("{0}({1}) v{2}\n{3}", plugin.Name, plugin.DisplayName, plugin.Version, plugin.Description));
-
-				Console.WriteLine();
-
-				StringBuilder sb = new StringBuilder();
-
-				Console.WriteLine("{0} - {1}", bookToken.Type, bookToken.Title);
-				sb.AppendLine(string.Format("书名：{0}", bookToken.Title));
-				sb.AppendLine(string.Format("作者：{0}", bookToken.Author));
-				sb.AppendLine();
-				sb.AppendLine();
-
-				bookToken.CreepStarted += (sender, e) => record(string.Format("\t开始下载书籍《{0}》", bookToken.Title), sb);
-				bookToken.CreepFetched += (sender, e) => record(string.Format("\t获取 “{0}”", e.Data), sb);
-				bookToken.CreepFinished += (sender, e) => record(string.Format("\t下载书籍《{0}》完成。", bookToken.Title), sb);
-				bookToken.StartCreep();
-				foreach (NDTChapter chapterToken in bookToken.Children)
+				using (StreamWriter writer = new StreamWriter(string.Format("{0}.txt", bookToken.Title), false, Encoding.UTF8))
 				{
-					chapterToken.CreepStarted += (sender, e) =>
+					//StringBuilder sb = new StringBuilder();
+
+					Console.WriteLine("{0} - {1}", bookToken.Type, bookToken.Title);
+					writer.WriteLine(string.Format("书名：{0}", bookToken.Title));
+					writer.WriteLine(string.Format("作者：{0}", bookToken.Author));
+					writer.WriteLine();
+					writer.WriteLine();
+
+					bookToken.CreepStarted += (sender, e) => Console.WriteLine("\t开始下载书籍《{0}》", bookToken.Title);
+					bookToken.CreepFetched += (sender, e) => Console.WriteLine("\t获取 “{0}”", e.Data);
+					bookToken.CreepFinished += (sender, e) => Console.WriteLine("\t下载书籍《{0}》完成。", bookToken.Title);
+					bookToken.StartCreep();
+					foreach (NDTChapter chapterToken in bookToken.Children)
 					{
-						record(string.Format("\t开始下载章节“{0}”", chapterToken.Title), sb);
-						sb.AppendLine("--------------------");
-						sb.AppendLine();
-						sb.AppendLine(chapterToken.Title);
-					};
-					chapterToken.CreepFetched += (sender, e) =>
-					{
-						//record(string.Format("{0}", e.Data), sb);
-						sb.AppendLine(string.Format("　　{0}", e.Data));
-					};
-					chapterToken.CreepFinished += (sender, e) =>
-					{
-						record(string.Format("\t下载章节“{0}”完成。", chapterToken.Title), sb);
-						sb.AppendLine();
-					};
-					chapterToken.StartCreep();
+						chapterToken.CreepStarted += (sender, e) =>
+						{
+							Console.WriteLine("\t开始下载章节“{0}”", chapterToken.Title);
+							writer.WriteLine("--------------------");
+							writer.WriteLine();
+							writer.WriteLine(chapterToken.Title);
+						};
+						chapterToken.CreepFetched += (sender, e) =>
+						{
+							//Console.WriteLine("{0}", e.Data);
+							writer.WriteLine(string.Format("　　{0}", e.Data));
+						};
+						chapterToken.CreepFinished += (sender, e) =>
+						{
+							Console.WriteLine("\t下载章节“{0}”完成。\n", chapterToken.Title);
+							writer.WriteLine();
+						};
+						chapterToken.StartCreep();
+					}
+
+					//Console.WriteLine(sb.ToString());
 				}
-
-				Console.WriteLine();
-
-				//Console.WriteLine(sb.ToString());
-				File.WriteAllText(string.Format("{0}.txt", bookToken.Title), sb.ToString());
 			}).Start();
 		}
 
-		private static void record(string str, StringBuilder sb)
+		private static void download(INovelDownloadPlugin plugin, string url)
 		{
-			Console.WriteLine(str);
+			NDTBook bookToken;
+			if (!plugin.TryGetBookToken(new Uri(url, UriKind.RelativeOrAbsolute), out bookToken)) return;
+
+			Console.WriteLine(string.Format("{0}({1}) v{2}\n{3}", plugin.Name, plugin.DisplayName, plugin.Version, plugin.Description));
+
+			Console.WriteLine();
+
+			download(bookToken);
 		}
 	}
 }

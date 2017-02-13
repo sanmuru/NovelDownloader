@@ -7,13 +7,13 @@ using System.Web;
 using NovelDownloader.Token;
 using SamLu.Web;
 
-namespace NovelDownloader.Plugin.luoqiu.com
+namespace NovelDownloader.Plugin._81zw.com
 {
-	public class BookToken : NDTBook
+	public class BookToken:NDTBook
 	{
-		internal static readonly Regex BookUrlRegex = new Regex(@"http://www.luoqiu.com/book/(?<BookUnicode>\d*).html", RegexOptions.Compiled);
-		internal static readonly Regex CategoryUrlRegex = new Regex(@"http://www.luoqiu.com/read/(?<BookUnicode>\d*)/(index.html)?", RegexOptions.Compiled);
+		internal static readonly Regex BookUrlRegex = new Regex(@"http://www.81zw.com/book/(?<BookUnicode>\d*)/(index.html)?", RegexOptions.Compiled);
 
+		private string source;
 		private string bookCategoryHTML;
 
 		public override string Type { get; protected set; } = "书籍";
@@ -27,10 +27,6 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		/// 书籍的URL。
 		/// </summary>
 		internal string BookUrl { get; private set; }
-		/// <summary>
-		/// 目录的URL。
-		/// </summary>
-		internal string CategoryUrl { get; private set; }
 
 		/// <summary>
 		/// 初始化<see cref="BookToken"/>对象。
@@ -52,19 +48,11 @@ namespace NovelDownloader.Plugin.luoqiu.com
 			string url = uri.ToString();
 			if (url == null) throw new ArgumentNullException(nameof(url));
 
-			Match bu_m = BookToken.BookUrlRegex.Match(url);
-			Match cu_m = BookToken.CategoryUrlRegex.Match(url);
-			if (bu_m.Success)
+			Match m = BookToken.BookUrlRegex.Match(url);
+			if (m.Success)
 			{
-				this.BookUnicode = ulong.Parse(bu_m.Groups["BookUnicode"].Value);
+				this.BookUnicode = ulong.Parse(m.Groups["BookUnicode"].Value);
 				this.BookUrl = url;
-				this.CategoryUrl = string.Format(@"http://www.luoqiu.com/read/{0}/", this.BookUnicode);
-			}
-			else if (cu_m.Success)
-			{
-				this.BookUnicode = ulong.Parse(cu_m.Groups["BookUnicode"].Value);
-				this.BookUrl = string.Format(@"http://www.luoqiu.com/book/{0}.html", this.BookUnicode);
-				this.CategoryUrl = url;
 			}
 			else
 				throw new InvalidOperationException(
@@ -73,9 +61,9 @@ namespace NovelDownloader.Plugin.luoqiu.com
 
 
 
-			string book_source = HTML.GetSource(this.BookUrl, Encoding.GetEncoding("GBK"));
+			this.source = HTML.GetSource(this.BookUrl, Encoding.GetEncoding("GBK"));
 
-			Match head_match = Regex.Match(book_source, @"<head>(?<HeadContent>[\s\S]*?)</head>", RegexOptions.Compiled);
+			Match head_match = Regex.Match(source, @"<head>(?<HeadContent>[\s\S]*?)</head>", RegexOptions.Compiled);
 			if (!head_match.Success) throw new InvalidOperationException("无法抓取信息。");
 
 			string head = head_match.Groups["HeadContent"].Value;
@@ -121,16 +109,12 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		#region StartCreep
 		protected override bool CanStartCreep()
 		{
-			if (
-				((this.BookUrl == null) || !BookToken.BookUrlRegex.IsMatch(this.BookUrl)) ||
-				((this.CategoryUrl == null) || !BookToken.CategoryUrlRegex.IsMatch(this.CategoryUrl))
-			)
+			if ((this.BookUrl == null) || !BookToken.BookUrlRegex.IsMatch(this.BookUrl))
 				return false;
-				
+
 			try
 			{
-				string category_source = HTML.GetSource(this.CategoryUrl, Encoding.GetEncoding("GBK"));
-				Match m = Regex.Match(category_source, @"<!--作品展示 start-->(?<BookCategoryHTML>[\s\S]*?)<!--作品展示 end-->", RegexOptions.Compiled);
+				Match m = Regex.Match(this.source, @"<div id=""list"">(?<BookCategoryHTML>[\s\S]*?)</div>", RegexOptions.Compiled);
 				if (!m.Success) return false;
 
 				this.bookCategoryHTML = m.Groups["BookCategoryHTML"].Value;
@@ -143,14 +127,14 @@ namespace NovelDownloader.Plugin.luoqiu.com
 				this.OnCreepErrored(this, e);
 				return false;
 			}
-			
+
 			return true;
 		}
 
 		protected override void StartCreepInternal()
 		{
-			const string REGEX = @"<a href=""(?<ChapterRelativeUrl>/read/{0}/(?<ChapterUnicode>\d*?).html)"" alt=""(?<AltContent>[\s\S]*?)"">(?<ChapterTitle>[\s\S]*?)</a>";
-			this.chapterRegex = new Regex(string.Format(REGEX, this.BookUnicode), RegexOptions.Compiled);
+			const string REGEX = @"<a href=""(?<ChapterRelativeUrl>(?<ChapterUnicode>\d*?).html)"">(?<ChapterTitle>[\s\S]*?)</a>";
+			this.chapterRegex = new Regex(REGEX, RegexOptions.Compiled);
 		}
 		#endregion
 
@@ -177,15 +161,15 @@ namespace NovelDownloader.Plugin.luoqiu.com
 					)
 				);
 		}
-		
+
 		private string[] Creep()
 		{
 			this.index = this.nextMatch.Index + this.nextMatch.Length;
-			
+
 			return new string[2]
 			{
 				this.nextMatch.Groups["ChapterTitle"].Value,
-				new Uri(LuoQiu_NovelDownloader.HostUri, new Uri(this.nextMatch.Groups["ChapterRelativeUrl"].Value, UriKind.Relative)).ToString()
+				new Uri(_81ZW_NovelDownloader.HostUri, new Uri(string.Format("book/{0}/{1}", this.BookUnicode, this.nextMatch.Groups["ChapterRelativeUrl"].Value), UriKind.Relative)).ToString()
 			};
 		}
 

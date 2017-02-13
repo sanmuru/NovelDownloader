@@ -52,6 +52,10 @@
       <Project>{5327b531-d3db-491b-927b-8e337ff20a70}</Project>
       <Name>NovelDownloader.Plugin.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugin\81zw.com\81zw.com.csproj">
+      <Project>{398a3955-6256-461a-a643-dcc0d525f2e5}</Project>
+      <Name>81zw.com</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\plugin\luoqiu.com\luoqiu.com.csproj">
       <Project>{db5e8ec3-e366-41bd-af27-64ff39b868d2}</Project>
       <Name>luoqiu.com</Name>

@@ -5,31 +5,31 @@ using System.Text;
 using System.Text.RegularExpressions;
 using NovelDownloader.Token;
 
-namespace NovelDownloader.Plugin.luoqiu.com
+namespace NovelDownloader.Plugin._81zw.com
 {
-	public class LuoQiu_NovelDownloader : INovelDownloadPlugin
+	public class _81ZW_NovelDownloader : INovelDownloadPlugin
 	{
 		/// <summary>
-		/// 落秋中文小说网的主域名。
+		/// 八一中文小说网的主域名。
 		/// </summary>
-		public static readonly Uri HostUri = new Uri("http://www.luoqiu.com", UriKind.Absolute);
-		
-		public string Name { get; private set; } = "luoqiu.com";
+		public static readonly Uri HostUri = new Uri("http://www.81zw.com/", UriKind.Absolute);
 
-		public string DisplayName { get; private set; } = "落秋中文小说下载";
+		public string Name { get; private set; } = "81zw.com";
+
+		public string DisplayName { get; private set; } = "八一中文小说下载";
 
 		public Version MinVersion { get; private set; } = Version.MinVersion;
 
 		public Version Version { get; private set; } = new Version(1, 0, 0, DateTime.Now.ToString("yyyyMMdd"), Version.BetaVersion);
 
-		public string Description { get; private set; } = "提供落秋中文(luoqiu.com)小说下载。";
+		public string Description { get; private set; } = "提供八一中文(81zw.com)小说下载。";
 
-		internal static readonly Guid _guid = new Guid("ef191ee4-fbb1-4a0c-8a54-37b829107cbf");
+		internal static readonly Guid _guid = new Guid("cbf539eb-ea3f-4af1-b261-a061eb0b7a9e");
 		public Guid Guid
 		{
 			get
 			{
-				return LuoQiu_NovelDownloader._guid;
+				return _81ZW_NovelDownloader._guid;
 			}
 		}
 
@@ -40,7 +40,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		/// <returns>指定书籍编号的<see cref="BookToken"/>对象。</returns>
 		public NDTBook GetBookToken(ulong bookUnicode)
 		{
-			return this.GetBookToken(new Uri(string.Format(@"http://www.luoqiu.com/book/{0}.html", bookUnicode)));
+			return this.GetBookToken(new Uri(string.Format(@"http://www.81zw.com/book/{0}.html", bookUnicode)));
 		}
 
 		/// <summary>
@@ -54,14 +54,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 				return this.GetBookToken(new Uri(url));
 			else
 			{
-				Match m = BookToken.CategoryUrlRegex.Match(url);
-				if (m.Success)
-				{
-					ulong bookUnicode = ulong.Parse(m.Groups["BookUnicode"].Value);
-					return this.GetBookToken(bookUnicode);
-				}
-				else
-					throw new InvalidOperationException(
+				throw new InvalidOperationException(
 					 "无法解析URL。",
 					 new ArgumentOutOfRangeException(nameof(url), url, "URL不符合格式。"));
 			}
@@ -88,7 +81,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 			try
 			{
 				bookToken = this.GetBookToken(uri);
-				
+
 				return (bookToken != null);
 			}
 			catch (Exception)
