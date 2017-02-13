@@ -11,7 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using HtmlAgilityPack;
 
-namespace OnlineNovelDownloaderPluginCreater
+namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 {
 	public partial class MainWindow
 	{

@@ -7,7 +7,7 @@
     <ProjectGuid>{ECD44060-A66B-4224-BB98-41C6241C3B93}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OnlineNovelDownloaderPluginCreater</RootNamespace>
+    <RootNamespace>NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater</RootNamespace>
     <AssemblyName>OnlineNovelDownloaderPluginCreater</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -45,6 +45,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -58,6 +59,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddTokenWindow.xaml.cs">
+      <DependentUpon>AddTokenWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow_PluginProject.cs" />
+    <Compile Include="NodeType.cs" />
+    <Compile Include="PropertyNodeItem\ProjectPropertyNodeItem.cs" />
+    <Compile Include="PropertyNodeItem\PropertyNodeItem.cs" />
+    <Compile Include="PropertyNodeItem\TokenTemplateInfoPropertyNodeItem.cs" />
+    <Compile Include="StartupWindow.xaml.cs">
+      <DependentUpon>StartupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyNodeItem\TokenProjectPropertyNodeItem.cs" />
+    <Page Include="AddTokenWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -70,6 +87,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="StartupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainWindow_LoadHtml.cs" />
@@ -96,6 +117,16 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\item_icon.png" />
+    <Resource Include="images\project_icon.png" />
+    <Resource Include="images\token_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\item_icon.xml" />
+    <Resource Include="images\project_icon.xml" />
+    <Resource Include="images\token_icon.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

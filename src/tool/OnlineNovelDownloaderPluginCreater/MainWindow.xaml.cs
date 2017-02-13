@@ -14,15 +14,26 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HtmlAgilityPack;
+using NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater.PropertyNodeItem;
 using SamLu.Web;
 
-namespace OnlineNovelDownloaderPluginCreater
+namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 {
 	/// <summary>
 	/// MainWindow.xaml 的交互逻辑
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		/// <summary>
+		/// 表示全部保存的<see cref="RoutedUICommand"/>对象。
+		/// </summary>
+		private static readonly RoutedUICommand SaveAllCommand = new RoutedUICommand("Save All", nameof(SaveAllCommand), typeof(MainWindow),
+			new InputGestureCollection()
+			{
+				new KeyGesture(Key.S, ModifierKeys.Control | ModifierKeys.Shift)
+			}
+		);
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -284,11 +295,11 @@ namespace OnlineNovelDownloaderPluginCreater
 		private void txtCommand_KeyUp(object sender, KeyEventArgs e)
 		{
 			TextBox txt = (TextBox)sender;
-			
+
 			if (e.Key == Key.Enter)
 			{
 				if (string.IsNullOrEmpty(txt.Text)) return;
-				
+
 				TabItem item = this.tc.SelectedItem as TabItem;
 				if (item == null) return;
 				else if (item == this.tiHTML_DOM)
@@ -303,7 +314,7 @@ namespace OnlineNovelDownloaderPluginCreater
 				{
 					this.regexNO++;
 					this._SORTED_fieldNO++;
-					
+
 					this.addField(string.Format("regex{0}", this.regexNO), typeof(string), txt.Text);
 					this.addField(string.Format("_SORTED_fragment{0}", this._SORTED_fieldNO), typeof(MatchCollection), string.Format("regex{0}", this.regexNO));
 				}
@@ -311,11 +322,119 @@ namespace OnlineNovelDownloaderPluginCreater
 				{
 					this.regexNO++;
 					this._SOURCE_fieldNO++;
-					
+
 					this.addField(string.Format("regex{0}", this.regexNO), typeof(string), txt.Text);
 					this.addField(string.Format("_SOURCE_fragment{0}", this._SOURCE_fieldNO), typeof(MatchCollection), string.Format("regex{0}", this.regexNO));
 				}
 				else throw new NotSupportedException();
+			}
+		}
+
+		private void Window_Loaded(object sender, RoutedEventArgs e)
+		{
+			StartupWindow window = new StartupWindow();
+			if (window.ShowDialog() == true)
+			{
+				this.Init(window.ProjectName, window.ProjectLocation);
+			}
+		}
+
+		private void miBuild_Click(object sender, RoutedEventArgs e)
+		{
+			this.generateFiles();
+		}
+		
+		private void miAddToken_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender != null)
+			{
+				if (this.miAddToken == sender)
+				{
+					int no = 1;
+					string name;
+					while (true)
+					{
+						name = string.Format("Token{0}", no++);
+						if (!this.tokens_item.Any(item => ((TokenProjectPropertyNodeItem)item).DisplayName == name))
+						{
+							//TokenTemplateInfoPropertyNodeItem.TokenTemplate.DefaultName = name;
+							break;
+						}
+					}
+
+					AddTokenWindow window = new AddTokenWindow(TokenType.Unknown);
+
+					if (window.ShowDialog() == true)
+						this.addToken(TokenType.Unknown, window.TokenName, null);
+				}
+				else
+				{
+					#region 重设默认值
+					Enum.GetNames(typeof(TokenType))
+					.Select(tokenTypeName => (TokenType)Enum.Parse(typeof(TokenType), tokenTypeName, false))
+					.Where(tokenType => tokenType != TokenType.Unknown)
+					.Select(tokenType =>
+						new
+						{
+							NamePattern = string.Format("{0}Token", tokenType),
+							TemplateItem = typeof(TokenTemplateInfoPropertyNodeItem).GetField(tokenType.ToString() + "TokenTemplate", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(typeof(TokenTemplateInfoPropertyNodeItem)) as TokenTemplateInfoPropertyNodeItem
+						}
+					)
+					.ToList().ForEach(
+						info =>
+						{
+							int no = 1;
+							string name;
+							while (true)
+							{
+								name = string.Format(info.NamePattern + "{0}", no++);
+								if (!this.tokens_item.Any(item => ((TokenProjectPropertyNodeItem)item).DisplayName == name))
+								{
+									info.TemplateItem.DefaultName = name;
+									break;
+								}
+							}
+						}
+					);
+					#endregion
+
+					if (this.miAddBookToken == sender)
+					{
+						AddTokenWindow window = new AddTokenWindow(TokenType.Book);
+
+						if (window.ShowDialog() == true)
+							this.addBookToken(window.TokenName);
+					}
+					else if (this.miAddVolumeToken == sender)
+					{
+						AddTokenWindow window = new AddTokenWindow(TokenType.Volume);
+
+						if (window.ShowDialog() == true)
+							this.addVolumeToken(window.TokenName);
+					}
+					else if (this.miAddChapterToken == sender)
+					{
+						AddTokenWindow window = new AddTokenWindow(TokenType.Chapter);
+
+						if (window.ShowDialog() == true)
+							this.addChapterToken(window.TokenName);
+					}
+					else if (this.miAddTextToken == sender)
+					{
+						AddTokenWindow window = new AddTokenWindow(TokenType.Text);
+
+						if (window.ShowDialog() == true)
+							this.addTextToken(window.TokenName);
+					}
+					else if (this.miAddImageToken == sender)
+					{
+						AddTokenWindow window = new AddTokenWindow(TokenType.Image);
+
+						if (window.ShowDialog() == true)
+							this.addImageToken(window.TokenName);
+					}
+					else throw new InvalidOperationException();
+				}
 			}
 		}
 	}

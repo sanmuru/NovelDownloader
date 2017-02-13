@@ -1,28 +1,47 @@
-﻿<Window x:Class="OnlineNovelDownloaderPluginCreater.MainWindow"
+﻿<Window x:Class="NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OnlineNovelDownloaderPluginCreater"
+        xmlns:local="clr-namespace:NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater"
         mc:Ignorable="d"
         Title="在线小说下载器插件生成器" Height="700" Width="1000"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Menu Grid.Row="0" Background="LightGray">
-            <MenuItem Header="文件(_F)"></MenuItem>
+            <MenuItem Header="文件(_F)">
+                <MenuItem Header="新建(_N)" Command="New"></MenuItem>
+                <MenuItem Header="打开(_O)" Command="Open"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="保存 {ItemName} (_S)" Command="Save"></MenuItem>
+                <MenuItem Header="{}{ItemName} 另存为(_A)" Command="SaveAs"></MenuItem>
+                <MenuItem Header="全部保存(_L)"></MenuItem>
+            </MenuItem>
             <MenuItem Header="视图(_V)"></MenuItem>
-            <MenuItem Header="项目(_P)"></MenuItem>
-            <MenuItem Header="工具(_T)"></MenuItem>
+            <MenuItem Header="项目(_P)">
+                <MenuItem Header="生成(_B)" Click="miBuild_Click"></MenuItem>
+                <Separator></Separator>
+                <MenuItem x:Name="miAddToken" Header="添加节点...(_T)" Click="miAddToken_Click"></MenuItem>
+                <MenuItem x:Name="miAddBookToken" Header="添加书籍节点(_B)" Click="miAddToken_Click"/>
+                <MenuItem x:Name="miAddVolumeToken" Header="添加卷节点(_V)" Click="miAddToken_Click"></MenuItem>
+                <MenuItem x:Name="miAddChapterToken" Header="添加章节点(_C)" Click="miAddToken_Click"></MenuItem>
+                <MenuItem x:Name="miAddTextToken" Header="添加文本节点(_T)" Click="miAddToken_Click"></MenuItem>
+                <MenuItem x:Name="miAddImageToken" Header="添加图片节点(_I)" Click="miAddToken_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="工具(_T)">
+                <MenuItem Header="选项(_O)"></MenuItem>
+            </MenuItem>
             <MenuItem Header="窗口(_W)"></MenuItem>
             <MenuItem Header="帮助(_H)"></MenuItem>
         </Menu>
 
-        <Grid Grid.Row="1">
+        <Grid x:Name="gdMain" Grid.Row="1" IsEnabled="False" Visibility="Visible">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition MinWidth="400" Width="400"></ColumnDefinition>
@@ -34,7 +53,7 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0">
+                <Grid Grid.Row="0" Margin="0,0,5,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition></RowDefinition>
@@ -56,7 +75,7 @@
 
                 <GridSplitter Grid.Row="1" Height="2" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Top"></GridSplitter>
 
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="1" Margin="0,0,5,0">
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
@@ -78,21 +97,85 @@
                 </Grid>
             </Grid>
 
-            <GridSplitter Grid.Column="0" Width="2" Background="Transparent"></GridSplitter>
+            <GridSplitter Grid.Column="0" Width="5" Background="Transparent"></GridSplitter>
 
-            <Grid Grid.Column="1">
-                <ListView x:Name="lvFields">
-                    <ListView.View>
-                        <GridView>
-                            <GridView.Columns>
-                                <GridViewColumn Header="字段" Width="120" DisplayMemberBinding="{Binding Field}"></GridViewColumn>
-                                <GridViewColumn Header="类型" Width="120" DisplayMemberBinding="{Binding Type}"></GridViewColumn>
-                                <GridViewColumn Header="值" Width="120" DisplayMemberBinding="{Binding Value}"></GridViewColumn>
-                            </GridView.Columns>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </Grid>
+            <Border Grid.Column="1"
+                    BorderBrush="Gray"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Background="LightGray">节点管理器</Label>
+
+                        <TreeView x:Name="tvTokenManager" Grid.Row="1" BorderBrush="Transparent">
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}">
+                                    <StackPanel Orientation="Horizontal" Margin="2.5">
+                                        <Image VerticalAlignment="Center" Source="{Binding Icon}" Width="24" Height="24"></Image>
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding DisplayName}" Margin="2,0,0,0"></TextBlock>
+                                        <StackPanel.ToolTip>
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding ToolTip}" TextWrapping="Wrap" MaxWidth="250" ></TextBlock>
+                                        </StackPanel.ToolTip>
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
+                            
+                            <!--
+                            <TreeViewItem x:Name="tviProject" Header="{}{ProjectName}" Style="{StaticResource TreeViewItemStyle}" IsExpanded="True"
+                                          >
+                                <TreeViewItem Header="Properties" Style="{StaticResource TreeViewItemStyle}">
+                                    <TreeViewItem Header="AssemblyInfo" Style="{StaticResource TreeViewItemStyle}"></TreeViewItem>
+                                </TreeViewItem>
+                                <TreeViewItem Header="引用" Style="{StaticResource TreeViewItemStyle}">
+                                    {References}
+                                </TreeViewItem>
+                                <TreeViewItem Header="Tokens" Style="{StaticResource TreeViewItemStyle}" IsExpanded="True">
+
+                                </TreeViewItem>
+                            </TreeViewItem>
+                            -->
+                        </TreeView>
+                    </Grid>
+
+                    <GridSplitter Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="5"></GridSplitter>
+
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Background="LightGray">字段管理器</Label>
+
+                        <ListView x:Name="lvFields" Grid.Row="1" BorderBrush="Transparent">
+                            <ListView.View>
+                                <GridView>
+                                    <GridView.Columns>
+                                        <GridViewColumn Header="字段" Width="120" DisplayMemberBinding="{Binding Field}"></GridViewColumn>
+                                        <GridViewColumn Header="类型" Width="120" DisplayMemberBinding="{Binding Type}"></GridViewColumn>
+                                        <GridViewColumn Header="值" Width="120" DisplayMemberBinding="{Binding Value}"></GridViewColumn>
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="2" Background="#FF7F7F7F">
+            <Label Height="25"
+                   Foreground="White"
+                   HorizontalAlignment="Left" VerticalAlignment="Center">就绪</Label>
         </Grid>
     </Grid>
 </Window>
