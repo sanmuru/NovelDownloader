@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NovelDownloader.Token;
 
-namespace NovelDownloader.Plugin._81zw.com
+namespace NovelDownloader.Plugin.顶点小说
 {
 	public class TextToken : NDTText
 	{

@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3C427119-B4E5-4D4B-A3E7-FDF1E8324D25}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{EFB4C31C-A3B4-43C3-B3AD-1468E6D3D517}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ExampleNovelDownloader</RootNamespace>
-    <AssemblyName>ExampleNovelDownloader</AssemblyName>
+    <RootNamespace>NovelDownloader.Plugin.顶点小说</RootNamespace>
+    <AssemblyName>顶点小说</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,16 +30,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\HtmlAgilityPack.1.4.9.5\lib\Net20\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SamLu, Version=1.6.0.0, Culture=neutral, PublicKeyToken=62bf6dedc251d3c5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\C# Study Files\SamLu[0]\SamLu.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="ChapterToken.cs" />
+    <Compile Include="DingDianXiaoShuo_NovelDownloader.cs" />
+    <Compile Include="BookToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextToken.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\NovelDownloader.Core\NovelDownloader.Core.csproj">
@@ -52,18 +62,9 @@
       <Project>{5327b531-d3db-491b-927b-8e337ff20a70}</Project>
       <Name>NovelDownloader.Plugin.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\plugin\81zw.com\81zw.com.csproj">
-      <Project>{398a3955-6256-461a-a643-dcc0d525f2e5}</Project>
-      <Name>81zw.com</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\plugin\luoqiu.com\luoqiu.com.csproj">
-      <Project>{db5e8ec3-e366-41bd-af27-64ff39b868d2}</Project>
-      <Name>luoqiu.com</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\plugin\顶点小说\顶点小说.csproj">
-      <Project>{efb4c31c-a3b4-43c3-b3ad-1468e6d3d517}</Project>
-      <Name>顶点小说</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
