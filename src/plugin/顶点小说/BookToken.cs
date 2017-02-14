@@ -4,18 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using HtmlAgilityPack;
 using NovelDownloader.Token;
 using SamLu.Web;
 
-namespace NovelDownloader.Plugin.luoqiu.com
+namespace NovelDownloader.Plugin.顶点小说
 {
 	public class BookToken : NDTBook
 	{
-		internal static readonly Regex BookUrlRegex = new Regex(@"http://www.luoqiu.com/book/(?<BookUnicode>\d*).html", RegexOptions.Compiled);
-		internal static readonly Regex CategoryUrlRegex = new Regex(@"http://www.luoqiu.com/read/(?<BookUnicode>\d*)/(index.html)?", RegexOptions.Compiled);
-
-		private string bookCategoryHTML;
-
+		internal static readonly Regex BookUrlRegex = new Regex(@"http://www.23us.com/book/(?<BookUnicode>\d*)", RegexOptions.Compiled);
+		internal static readonly Regex CategoryUrlRegex = new Regex(@"http://www.23us.com/html/\d*/(?<BookUnicode>\d*)/(index.html)?", RegexOptions.Compiled);
+		
 		public override string Type { get; protected set; } = "书籍";
 
 		/// <summary>
@@ -58,12 +57,12 @@ namespace NovelDownloader.Plugin.luoqiu.com
 			{
 				this.BookUnicode = ulong.Parse(bu_m.Groups["BookUnicode"].Value);
 				this.BookUrl = url;
-				this.CategoryUrl = string.Format(@"http://www.luoqiu.com/read/{0}/", this.BookUnicode);
+				this.CategoryUrl = string.Format(@"http://www.23us.com/html/{0}/{1}/", this.BookUnicode.ToString().Remove(2), this.BookUnicode);
 			}
 			else if (cu_m.Success)
 			{
 				this.BookUnicode = ulong.Parse(cu_m.Groups["BookUnicode"].Value);
-				this.BookUrl = string.Format(@"http://www.luoqiu.com/book/{0}.html", this.BookUnicode);
+				this.BookUrl = string.Format(@"http://www.23us.com/book/{0}", this.BookUnicode);
 				this.CategoryUrl = url;
 			}
 			else
@@ -73,36 +72,41 @@ namespace NovelDownloader.Plugin.luoqiu.com
 
 
 
-			string book_source = HTML.GetSource(this.BookUrl, Encoding.GetEncoding("GBK"));
+			InvalidOperationException exception = new InvalidOperationException("无法抓取信息。");
 
-			Match head_match = Regex.Match(book_source, @"<head>(?<HeadContent>[\s\S]*?)</head>", RegexOptions.Compiled);
-			if (!head_match.Success) throw new InvalidOperationException("无法抓取信息。");
+			HtmlDocument doc = new HtmlDocument();
+			doc.LoadHtml(HTML.GetSource(this.BookUrl, Encoding.GetEncoding("GBK")));
 
-			string head = head_match.Groups["HeadContent"].Value;
+			HtmlNode node;
 
-			MatchCollection meta_matches = Regex.Matches(head, @"<meta property=""(?<MetaProperty>[\s\S]*?)"" content=""(?<MetaContent>[\s\S]*?)""/>", RegexOptions.Compiled);
-			if (meta_matches.Count == 0) throw new InvalidOperationException("无法抓取信息。");
+			node = doc.DocumentNode.SelectSingleNode("/head/meta[@name='keywords']");
+			string title = node?.GetAttributeValue("content", null);
+			//string title = doc.DocumentNode.SelectSingleNode("/head/meta[@name='keywords']")?.GetAttributeValue("content", null);
+			if (title == null) throw exception;
+			else this.Title = title;
 
-			foreach (Match meta_match in meta_matches)
-			{
-				if (!meta_match.Success) throw new InvalidOperationException("无法抓取信息。");
+			HtmlNode contentDLElement = doc.GetElementbyId("content");
+			if (contentDLElement == null) throw exception;
 
-				switch (meta_match.Groups["MetaProperty"].Value)
-				{
-					case "og:novel:book_name":
-						this.Title = HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value);
-						break;
-					case "og:novel:author":
-						this.Author = HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value);
-						break;
-					case "og:image":
-						this.Cover = new Uri(HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value), UriKind.Absolute);
-						break;
-					case "og:description":
-						this.Description = HttpUtility.HtmlDecode(meta_match.Groups["MetaContent"].Value.Replace("<br />", Environment.NewLine)).Trim();
-						break;
-				}
-			}
+			node = contentDLElement.SelectSingleNode("//img");
+			string coverUrl = node?.GetAttributeValue("src", null);
+			if (coverUrl == null) throw exception;
+			else this.Cover = new Uri(coverUrl, UriKind.Absolute);
+
+			node = contentDLElement.SelectSingleNode("//table");
+			HtmlNodeCollection table = node?.SelectNodes("//th | //td");
+			if (table == null) throw exception;
+			System.Diagnostics.Debug.Assert(table.Count % 2 == 0, "书籍信息不成对。");
+			Dictionary<string, string> dic = new Dictionary<string, string>();
+			for (int i = 0; i < table.Count; i += 2)
+				dic.Add(table[i].InnerText, table[i + 1].InnerText);
+			if (!dic.ContainsKey("文章作者")) throw exception;
+			else this.Author = dic["文章作者"];
+
+			node = contentDLElement.SelectNodes("dd/p")?.First(p => p.Attributes.Count == 0);
+			if (node == null) throw exception;
+			else
+				this.Description = HttpUtility.HtmlDecode(node.InnerText).Trim();
 		}
 
 		/// <summary>
@@ -117,7 +121,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		{
 			this.Author = author;
 		}
-
+		
 		#region StartCreep
 		protected override bool CanStartCreep()
 		{
@@ -129,11 +133,15 @@ namespace NovelDownloader.Plugin.luoqiu.com
 				
 			try
 			{
-				string category_source = HTML.GetSource(this.CategoryUrl, Encoding.GetEncoding("GBK"));
-				Match m = Regex.Match(category_source, @"<!--作品展示 start-->(?<BookCategoryHTML>[\s\S]*?)<!--作品展示 end-->", RegexOptions.Compiled);
-				if (!m.Success) return false;
+				HtmlDocument doc = new HtmlDocument();
+				doc.LoadHtml(HTML.GetSource(this.CategoryUrl, Encoding.GetEncoding("GBK")));
 
-				this.bookCategoryHTML = m.Groups["BookCategoryHTML"].Value;
+				HtmlNode tableElement = doc.GetElementbyId("at");
+				HtmlNodeCollection table = tableElement?.SelectNodes("*//a");
+				if (table == null) return false;
+
+				this.enumerator = ((IEnumerable<HtmlNode>)table).GetEnumerator();
+				if (this.enumerator == null) return false;
 			}
 			catch (Exception e)
 			{
@@ -149,44 +157,38 @@ namespace NovelDownloader.Plugin.luoqiu.com
 
 		protected override void StartCreepInternal()
 		{
-			const string REGEX = @"<a href=""(?<ChapterRelativeUrl>/read/{0}/(?<ChapterUnicode>\d*?).html)"" alt=""(?<AltContent>[\s\S]*?)"">(?<ChapterTitle>[\s\S]*?)</a>";
-			this.chapterRegex = new Regex(string.Format(REGEX, this.BookUnicode), RegexOptions.Compiled);
+			this.hasNext = this.enumerator.MoveNext();
 		}
 		#endregion
 
 		#region Creep
-		int index;
-		Regex chapterRegex;
-		Match nextMatch;
-		private bool CanCreep(int index)
+		private IEnumerator<HtmlNode> enumerator;
+		private bool hasNext;
+
+		private bool CanCreep()
 		{
-			nextMatch = this.chapterRegex.Match(this.bookCategoryHTML, index);
-			return nextMatch.Success;
+			return this.hasNext;
 		}
 
 		protected override bool CanCreep<TData>(TData data)
 		{
-			if (typeof(TData).Equals(typeof(int)))
-				return this.CanCreep((int)(object)data);
-			else
-				throw new NotSupportedException(
-					string.Format("不支持的数据类型{0}", typeof(TData).FullName),
-					new ArgumentException(
-						string.Format("参数的类型为{1}。", typeof(TData).FullName),
-						nameof(data)
-					)
-				);
+			return this.CanCreep();
 		}
-		
+
 		private string[] Creep()
 		{
-			this.index = this.nextMatch.Index + this.nextMatch.Length;
-			
-			return new string[2]
+			HtmlNode current = this.enumerator.Current;
+
+			string[] fetch = new string[]
 			{
-				this.nextMatch.Groups["ChapterTitle"].Value,
-				new Uri(LuoQiu_NovelDownloader.HostUri, new Uri(this.nextMatch.Groups["ChapterRelativeUrl"].Value, UriKind.Relative)).ToString()
+				current.InnerText,
+				new Uri(DingDianXiaoShuo_NovelDownloader.HostUri, new Uri(string.Format("html/{0}/{1}/{2}", this.BookUnicode.ToString().Remove(2), this.BookUnicode, current.GetAttributeValue("href", null)), UriKind.Relative)).ToString()
 			};
+
+			this.hasNext = this.enumerator.MoveNext();
+			if (this.enumerator.Current.InnerText == string.Format("{0}更新重要通告", this.Title)) this.hasNext = this.enumerator.MoveNext();
+
+			return fetch;
 		}
 
 		public override TFetch Creep<TData, TFetch>(TData data)
@@ -209,7 +211,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 
 		protected override bool CreepInternal()
 		{
-			if (!this.CanCreep(this.index)) return false;
+			if (!this.CanCreep()) return false;
 
 			string[] data = this.Creep();
 			if (data != null && data.Length == 2)

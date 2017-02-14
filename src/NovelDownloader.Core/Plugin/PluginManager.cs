@@ -48,7 +48,11 @@ namespace NovelDownloader.Plugin
 			if (!File.Exists(pluginFileName)) throw new FileNotFoundException("无法从指定文件中加载插件。", pluginFileName);
 
 			Assembly pluginAssembly = Assembly.LoadFrom(pluginFileName);
+			return this.LoadInternal(pluginAssembly).ToList();
+		}
 
+		private IEnumerable<IPlugin> LoadInternal(Assembly pluginAssembly)
+		{
 			if (pluginAssembly != null)
 			{
 				var pluginTypes =

@@ -16,13 +16,14 @@ namespace ExampleNovelDownloader
 
 		static void Main(string[] args)
 		{
-			IEnumerable<INovelDownloadPlugin> plugins = Enumerable.Empty<INovelDownloadPlugin>();
+			IEnumerable<INovelDownloadPlugin> plugins = null;
 			try
 			{
 				Exception ex = null;
 
-				pluginManager.Load("luoqiu.com.dll").ToArray();
-				pluginManager.Load("81zw.com.dll").ToArray();
+				pluginManager.Load("luoqiu.com.dll");
+				pluginManager.Load("81zw.com.dll");
+				pluginManager.Load("顶点小说.dll");
 
 				plugins = pluginManager.Plugins.Select(pair => pair.Value).OfType<INovelDownloadPlugin>();
 
