@@ -23,7 +23,7 @@ namespace NovelDownloader.Plugin.顶点小说
 
 		public string Description { get; private set; } = "提供顶点小说(23us.com)小说下载。";
 
-		internal static readonly Guid _guid = new Guid("cbf539eb-ea3f-4af1-b261-a061eb0b7a9e");
+		internal static readonly Guid _guid = new Guid("3ccc357d-eceb-4cf2-8de4-47050a0abcd3");
 		public Guid Guid
 		{
 			get

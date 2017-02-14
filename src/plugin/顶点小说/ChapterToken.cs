@@ -12,7 +12,7 @@ namespace NovelDownloader.Plugin.顶点小说
 {
 	public class ChapterToken : NDTChapter
 	{
-		internal static readonly Regex ChapterUrlRegex = new Regex(@"http://www.luoqiu.com/read/(?<BookUnicode>\d*)/(?<ChapterUnicode>\d*).html", RegexOptions.Compiled);
+		internal static readonly Regex ChapterUrlRegex = new Regex(@"http://www.23us.com/html/\d*/(?<BookUnicode>\d*)/(?<ChapterUnicode>\d*).html", RegexOptions.Compiled);
 
 		public override string Type { get; protected set; } = "章节";
 
@@ -62,9 +62,6 @@ namespace NovelDownloader.Plugin.顶点小说
 			}
 			catch (Exception e)
 			{
-#if DEBUG
-				throw;
-#endif
 				this.OnCreepErrored(this, e);
 				return false;
 			}
@@ -100,7 +97,7 @@ namespace NovelDownloader.Plugin.顶点小说
 
 		private string Creep()
 		{
-			const string SEPERATOR = "<br />";
+			const string SEPERATOR = "<br>";
 
 			int start_index = this.index;
 			int end_index = this.chapterContentHTML.IndexOf(SEPERATOR, index) - 1;

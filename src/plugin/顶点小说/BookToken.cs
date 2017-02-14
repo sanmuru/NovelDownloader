@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using HtmlAgilityPack;
 using NovelDownloader.Token;
 using SamLu.Web;
@@ -11,7 +12,7 @@ namespace NovelDownloader.Plugin.顶点小说
 {
 	public class BookToken : NDTBook
 	{
-		internal static readonly Regex BookUrlRegex = new Regex(@"http://www.23us.com/book/(?<BookUnicode>\d*)/", RegexOptions.Compiled);
+		internal static readonly Regex BookUrlRegex = new Regex(@"http://www.23us.com/book/(?<BookUnicode>\d*)", RegexOptions.Compiled);
 		internal static readonly Regex CategoryUrlRegex = new Regex(@"http://www.23us.com/html/\d*/(?<BookUnicode>\d*)/(index.html)?", RegexOptions.Compiled);
 		
 		public override string Type { get; protected set; } = "书籍";
@@ -47,7 +48,6 @@ namespace NovelDownloader.Plugin.顶点小说
 		/// </exception>
 		public BookToken(Uri uri) : this(null, null)
 		{
-
 			string url = uri.ToString();
 			if (url == null) throw new ArgumentNullException(nameof(url));
 
@@ -57,12 +57,12 @@ namespace NovelDownloader.Plugin.顶点小说
 			{
 				this.BookUnicode = ulong.Parse(bu_m.Groups["BookUnicode"].Value);
 				this.BookUrl = url;
-				this.CategoryUrl = string.Format(@"http://www.luoqiu.com/read/{0}/", this.BookUnicode);
+				this.CategoryUrl = string.Format(@"http://www.23us.com/html/{0}/{1}/", this.BookUnicode.ToString().Remove(2), this.BookUnicode);
 			}
 			else if (cu_m.Success)
 			{
 				this.BookUnicode = ulong.Parse(cu_m.Groups["BookUnicode"].Value);
-				this.BookUrl = string.Format(@"http://www.luoqiu.com/book/{0}.html", this.BookUnicode);
+				this.BookUrl = string.Format(@"http://www.23us.com/book/{0}", this.BookUnicode);
 				this.CategoryUrl = url;
 			}
 			else
@@ -73,33 +73,40 @@ namespace NovelDownloader.Plugin.顶点小说
 
 
 			InvalidOperationException exception = new InvalidOperationException("无法抓取信息。");
-			
+
 			HtmlDocument doc = new HtmlDocument();
 			doc.LoadHtml(HTML.GetSource(this.BookUrl, Encoding.GetEncoding("GBK")));
 
-			string title = doc.DocumentNode.SelectSingleNode("/head/meta[@name='keywords']")?.GetAttributeValue("content", null);
+			HtmlNode node;
+
+			node = doc.DocumentNode.SelectSingleNode("/head/meta[@name='keywords']");
+			string title = node?.GetAttributeValue("content", null);
+			//string title = doc.DocumentNode.SelectSingleNode("/head/meta[@name='keywords']")?.GetAttributeValue("content", null);
 			if (title == null) throw exception;
 			else this.Title = title;
 
 			HtmlNode contentDLElement = doc.GetElementbyId("content");
 			if (contentDLElement == null) throw exception;
 
-			string coverUrl = contentDLElement.SelectSingleNode("//img")?.GetAttributeValue("src", null);
+			node = contentDLElement.SelectSingleNode("//img");
+			string coverUrl = node?.GetAttributeValue("src", null);
 			if (coverUrl == null) throw exception;
 			else this.Cover = new Uri(coverUrl, UriKind.Absolute);
 
-			HtmlNodeCollection table = contentDLElement.SelectSingleNode("//table")?.SelectNodes("//th | //td");
+			node = contentDLElement.SelectSingleNode("//table");
+			HtmlNodeCollection table = node?.SelectNodes("//th | //td");
 			if (table == null) throw exception;
 			System.Diagnostics.Debug.Assert(table.Count % 2 == 0, "书籍信息不成对。");
 			Dictionary<string, string> dic = new Dictionary<string, string>();
 			for (int i = 0; i < table.Count; i += 2)
 				dic.Add(table[i].InnerText, table[i + 1].InnerText);
-			if (dic.ContainsKey("文章作者")) throw exception;
+			if (!dic.ContainsKey("文章作者")) throw exception;
 			else this.Author = dic["文章作者"];
 
-			string description = contentDLElement.SelectSingleNode("//p[position()=2]")?.InnerText?.Trim();
-			if (description == null) throw exception;
-			else this.Description = description;
+			node = contentDLElement.SelectNodes("dd/p")?.First(p => p.Attributes.Count == 0);
+			if (node == null) throw exception;
+			else
+				this.Description = HttpUtility.HtmlDecode(node.InnerText).Trim();
 		}
 
 		/// <summary>
@@ -130,7 +137,7 @@ namespace NovelDownloader.Plugin.顶点小说
 				doc.LoadHtml(HTML.GetSource(this.CategoryUrl, Encoding.GetEncoding("GBK")));
 
 				HtmlNode tableElement = doc.GetElementbyId("at");
-				HtmlNodeCollection table = tableElement?.SelectNodes("//a");
+				HtmlNodeCollection table = tableElement?.SelectNodes("*//a");
 				if (table == null) return false;
 
 				this.enumerator = ((IEnumerable<HtmlNode>)table).GetEnumerator();
@@ -171,6 +178,7 @@ namespace NovelDownloader.Plugin.顶点小说
 		private string[] Creep()
 		{
 			HtmlNode current = this.enumerator.Current;
+
 			string[] fetch = new string[]
 			{
 				current.InnerText,
@@ -178,6 +186,8 @@ namespace NovelDownloader.Plugin.顶点小说
 			};
 
 			this.hasNext = this.enumerator.MoveNext();
+			if (this.enumerator.Current.InnerText == string.Format("{0}更新重要通告", this.Title)) this.hasNext = this.enumerator.MoveNext();
+
 			return fetch;
 		}
 
