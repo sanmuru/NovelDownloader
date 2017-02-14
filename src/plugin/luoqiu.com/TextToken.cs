@@ -10,7 +10,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 	{
 
 		/// <summary>
-		/// 初始化<see cref="NDTChapter"/>对象。
+		/// 初始化<see cref="TextToken"/>对象。
 		/// </summary>
 		public TextToken() : base() { }
 

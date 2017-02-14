@@ -174,7 +174,7 @@ namespace NovelDownloader.Plugin.顶点小说
 			string[] fetch = new string[]
 			{
 				current.InnerText,
-				new Uri(DingDianXiaoShuo_NovelDownloader.HostUri,new Uri(current.GetAttributeValue("href", null), UriKind.Relative)).ToString()
+				new Uri(DingDianXiaoShuo_NovelDownloader.HostUri, new Uri(string.Format("html/{0}/{1}/{2}", this.BookUnicode.ToString().Remove(2), this.BookUnicode, current.GetAttributeValue("href", null)), UriKind.Relative)).ToString()
 			};
 
 			this.hasNext = this.enumerator.MoveNext();
