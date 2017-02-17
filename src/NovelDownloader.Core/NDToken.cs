@@ -163,15 +163,6 @@ namespace NovelDownloader
 		/// </summary>
 		public virtual void StartCreep()
 		{
-			lock (this.syncObj)
-			{
-				if (!this.creepStarted)
-				{
-					this.creepStarted = true;
-					this.OnCreepStarted(this, new EventArgs());
-				}
-			}
-
 			bool canStartCreep = false;
 			lock (this.syncObj)
 			{
@@ -183,7 +174,17 @@ namespace NovelDownloader
 
 			if (canStartCreep)
 			{
+				this.Children.Clear();
 				this.StartCreepInternal();
+
+				lock (this.syncObj)
+				{
+					if (!this.creepStarted)
+					{
+						this.creepStarted = true;
+						this.OnCreepStarted(this, new EventArgs());
+					}
+				}
 
 				while (true)
 				{
@@ -201,9 +202,9 @@ namespace NovelDownloader
 						}
 					}
 				}
-			}
 
-			this.OnCreepFinished(this, new EventArgs());
+				this.OnCreepFinished(this, new EventArgs());
+			}
 		}
 
 		/// <summary>

@@ -60,6 +60,10 @@
       <Project>{db5e8ec3-e366-41bd-af27-64ff39b868d2}</Project>
       <Name>luoqiu.com</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\plugin\wenku8.com\wenku8.com.csproj">
+      <Project>{72f73f4b-cd5b-49a1-af46-3425d41ff453}</Project>
+      <Name>wenku8.com</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\plugin\顶点小说\顶点小说.csproj">
       <Project>{efb4c31c-a3b4-43c3-b3ad-1468e6d3d517}</Project>
       <Name>顶点小说</Name>
