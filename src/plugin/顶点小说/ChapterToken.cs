@@ -18,7 +18,7 @@ namespace NovelDownloader.Plugin.顶点小说
 
 		public ulong ChapterUnicode { get; private set; }
 
-		public ChapterToken(Uri uri) : this(null, null)
+		public ChapterToken(Uri uri) : base(uri)
 		{
 			if (uri == null) throw new ArgumentNullException(nameof(uri));
 			string url = uri.ToString();
@@ -26,7 +26,7 @@ namespace NovelDownloader.Plugin.顶点小说
 			Match m = ChapterToken.ChapterUrlRegex.Match(url);
 			if (m.Success)
 			{
-				this.ChapterUnicode = ulong.Parse(m.Groups["BookUnicode"].Value);
+				this.ChapterUnicode = ulong.Parse(m.Groups["ChapterUnicode"].Value);
 				this.ChapterUrl = url;
 			}
 		}
