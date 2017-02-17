@@ -148,11 +148,11 @@ namespace ExampleNovelDownloader
 						chapterToken.CreepFetched += (sender, e) =>
 						{
 							writer.WriteLine("　　{0}", e.Data);
-							writer.WriteLine();
 						};
 						chapterToken.CreepFinished += (sender, e) =>
 						{
 							Console.WriteLine("\t\t\t下载章节【{0}】完成。\n", chapterToken.Title);
+							writer.WriteLine();
 						};
 						chapterToken.StartCreep();
 					}

@@ -48,8 +48,8 @@ namespace NovelDownloader.Plugin.顶点小说
 		/// </exception>
 		public BookToken(Uri uri) : base(uri)
 		{
+			if (uri == null) throw new ArgumentNullException(nameof(uri));
 			string url = uri.ToString();
-			if (url == null) throw new ArgumentNullException(nameof(url));
 
 			Match bu_m = BookToken.BookUrlRegex.Match(url);
 			Match cu_m = BookToken.CategoryUrlRegex.Match(url);

@@ -55,7 +55,24 @@ namespace NovelDownloader.Plugin.wenku8.com
 				HtmlNode contentNode = doc.GetElementbyId("content");
 				if (contentNode == null) return false;
 
-				this.enumerator = HttpUtility.HtmlDecode(contentNode.InnerText).Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Select(line => line.Trim()).Where(line => line != string.Empty).GetEnumerator();
+				this.enumerator = 
+					contentNode.ChildNodes
+					.Select(node => 
+					{
+						if (node.NodeType == HtmlNodeType.Text)
+							return HttpUtility.HtmlDecode(node.InnerText).Trim();
+						else if (node.NodeType == HtmlNodeType.Element)
+						{
+							if (node.Name == "ul" || node.Name == "br")
+								return node.InnerText.Trim();
+							else if (node.Name == "div")
+								return node.Element("a").Element("img").GetAttributeValue("src", null);
+							else return null;
+						}
+						else return null;
+					})
+					.Where(line => !string.IsNullOrEmpty(line))
+					.GetEnumerator();
 			}
 			catch (Exception e)
 			{
@@ -118,8 +135,16 @@ namespace NovelDownloader.Plugin.wenku8.com
 			if (!this.CanCreep()) return false;
 
 			string data = this.Creep();
-			this.Add(new TextToken(data));
-			this.OnCreepFetched(this, data);
+			if (ImageToken.ImageUrlRegex.IsMatch(data))
+			{
+				this.Add(new ImageToken(data));
+				this.OnCreepFetched(this, string.Format("[插图({0})]", data));
+			}
+			else
+			{
+				this.Add(new TextToken(data));
+				this.OnCreepFetched(this, data);
+			}
 
 			return true;
 		}
