@@ -8,7 +8,6 @@ namespace NovelDownloader.Plugin.顶点小说
 {
 	public class TextToken : NDTText
 	{
-
 		/// <summary>
 		/// 初始化<see cref="TextToken"/>对象。
 		/// </summary>

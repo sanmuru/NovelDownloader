@@ -47,7 +47,7 @@ namespace NovelDownloader.Plugin.luoqiu.com
 		/// <exception cref="InvalidOperationException">
 		/// 参数<paramref name="uri"/>不属于书籍URL或目录URL。
 		/// </exception>
-		public BookToken(Uri uri) : this(null, null)
+		public BookToken(Uri uri) : base(uri)
 		{
 			string url = uri.ToString();
 			if (url == null) throw new ArgumentNullException(nameof(url));

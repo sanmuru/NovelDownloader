@@ -6,9 +6,9 @@ using System.Text;
 namespace NovelDownloader.Token
 {
 	/// <summary>
-	/// 表示文本的<see cref="NDToken"/>子类的虚拟基类。
+	/// 表示图片的<see cref="NDToken"/>子类的虚拟基类。
 	/// </summary>
-	public abstract class NDTText : NDToken
+	public abstract class NDTImage : NDToken
 	{
 		public sealed override ICollection<NDToken> Children
 		{
@@ -46,40 +46,22 @@ namespace NovelDownloader.Token
 				throw new NotSupportedException();
 			}
 		}
-		public sealed override Uri Uri
-		{
-			get
-			{
-				throw new NotSupportedException();
-			}
-
-			protected set
-			{
-				throw new NotSupportedException();
-			}
-		}
 
 		/// <summary>
-		/// 初始化<see cref="NDTText"/>对象。
+		/// 初始化<see cref="NDTImage"/>对象。
 		/// </summary>
-		protected NDTText() : base() { }
+		protected NDTImage() : base() { }
 
 		/// <summary>
-		/// 使用指定的统一资源标识符初始化<see cref="NDTText"/>对象。
+		/// 使用指定的统一资源标识符初始化<see cref="NDTImage"/>对象。
 		/// </summary>
 		/// <param name="uri">指定的统一资源标识符。</param>
-		protected NDTText(Uri uri) : base(uri) { }
-
-		/// <summary>
-		/// 获取和设置<see cref="NDTText"/>对象中的内容。
-		/// </summary>
-		public virtual string Content { get; set; }
+		protected NDTImage(Uri uri) : base(uri) { }
 		
-		protected NDTText(string content) : this(nameof(NDTText), content) { }
-
-		private NDTText(string type, string content) : base()
-		{
-			this.Content = content;
-		}
+		/// <summary>
+		/// 使用指定的URL初始化<see cref="NDTImage"/>对象。
+		/// </summary>
+		/// <param name="url">指定的URL。</param>
+		protected NDTImage(string url) : this(new Uri(url)) { }
 	}
 }
