@@ -107,7 +107,7 @@ namespace ExampleNovelDownloader
 				bookToken.StartCreep();
 				foreach (NDTVolume volumeToken in bookToken.Children)
 				{
-					FileInfo file = new FileInfo(Path.Combine(directory.FullName, process(volumeToken.Title)));
+					FileInfo file = new FileInfo(Path.Combine(directory.FullName, process(volumeToken.Title) + ".txt"));
 					StreamWriter writer = null;
 					volumeToken.CreepStarted += (sender, e) =>
 					{
