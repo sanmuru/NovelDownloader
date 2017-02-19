@@ -29,6 +29,10 @@ namespace NovelDownloader.Plugin.wenku8.com
 				this.ChapterUnicode = ulong.Parse(m.Groups["ChapterUnicode"].Value);
 				this.ChapterUrl = url;
 			}
+			else
+				throw new InvalidOperationException(
+					"无法解析URL。",
+					new ArgumentOutOfRangeException(nameof(url), url, "URL不符合格式。"));
 		}
 
 		/// <summary>

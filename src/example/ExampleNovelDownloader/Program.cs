@@ -25,6 +25,7 @@ namespace ExampleNovelDownloader
 				pluginManager.Load("81zw.com.dll");
 				pluginManager.Load("顶点小说.dll");
 				pluginManager.Load("wenku8.com.dll");
+				pluginManager.Load("qidian.com.dll");
 
 				plugins = pluginManager.Plugins.Select(pair => pair.Value).OfType<INovelDownloadPlugin>();
 
@@ -220,9 +221,12 @@ namespace ExampleNovelDownloader
 
 			Console.WriteLine();
 
-			if (bookToken.Children.All(child => child is NDTChapter))
+			if (bookToken is NovelDownloader.Plugin.luoqiu.com.BookToken ||
+				bookToken is NovelDownloader.Plugin._81zw.com.BookToken ||
+				bookToken is NovelDownloader.Plugin.顶点小说.BookToken)
 				downloadNormal(plugin, bookToken);
-			else if (bookToken.Children.All(child => child is NDTVolume))
+			else if (bookToken is NovelDownloader.Plugin.wenku8.com.BookToken ||
+				bookToken is NovelDownloader.Plugin.qidian.com.BookToken)
 				downloadLight(plugin, bookToken);
 			else Console.WriteLine("无法下载《{0]》", bookToken.Title);
 		}
