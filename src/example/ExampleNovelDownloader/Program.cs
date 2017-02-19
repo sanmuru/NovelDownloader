@@ -220,10 +220,11 @@ namespace ExampleNovelDownloader
 
 			Console.WriteLine();
 
-			if (bookToken.Children.All(child => child is NDTVolume))
-				downloadLight(plugin, bookToken);
-			else
+			if (bookToken.Children.All(child => child is NDTChapter))
 				downloadNormal(plugin, bookToken);
+			else if (bookToken.Children.All(child => child is NDTVolume))
+				downloadLight(plugin, bookToken);
+			else Console.WriteLine("无法下载《{0]》", bookToken.Title);
 		}
 
 		private static string process(string s)
