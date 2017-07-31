@@ -1,0 +1,16 @@
+LIBRARY
+EXPORTS
+	LoadPlugin										@1
+	ReleasePlugin									@2
+	GetPluginList									@3
+	Plugin_Name									@4
+	Plugin_DisplayName							@5
+	Plugin_Version									@6
+	Plugin_MinVersion							@7
+	Plugin_Description							@8
+	Plugin_Guid										@9
+	Version_Major									@10
+	Version_Minor									@11
+	Version_Revision								@12
+	Version_Date									@13
+	Version_Period									@14

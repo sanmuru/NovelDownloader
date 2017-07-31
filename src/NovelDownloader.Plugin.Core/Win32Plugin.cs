@@ -59,7 +59,7 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				return Marshal.PtrToStringAuto(this.PluginNameFunc(this.PluginHandle));
+				return Marshal.PtrToStringUni(this.PluginNameFunc(this.PluginHandle));
 			}
 		}
 
@@ -70,7 +70,7 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				return Marshal.PtrToStringAuto(this.PluginDisplayNameFunc(this.PluginHandle));
+				return Marshal.PtrToStringUni(this.PluginDisplayNameFunc(this.PluginHandle));
 			}
 		}
 
@@ -92,8 +92,8 @@ namespace NovelDownloader.Plugin
 			{
 				_version version = (_version)Marshal.PtrToStructure(this.PluginVersionFunc(this.PluginHandle), typeof(_version));
 				Version v = new Version(version.Minor, version.Major, version.Revision,
-					Marshal.PtrToStringAuto(version.Date),
-					Marshal.PtrToStringAuto(version.Period)
+					Marshal.PtrToStringUni(version.Date),
+					Marshal.PtrToStringUni(version.Period)
 				);
 				return v;
 			}
@@ -108,8 +108,8 @@ namespace NovelDownloader.Plugin
 			{
 				_version version = (_version)Marshal.PtrToStructure(this.PluginMinVersionFunc(this.PluginHandle), typeof(_version));
 				Version v = new Version(version.Minor, version.Major, version.Revision,
-					Marshal.PtrToStringAuto(version.Date),
-					Marshal.PtrToStringAuto(version.Period)
+					Marshal.PtrToStringUni(version.Date),
+					Marshal.PtrToStringUni(version.Period)
 				);
 				return v;
 			}
@@ -122,11 +122,10 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				return Marshal.PtrToStringAuto(this.PluginDescriptionFunc(this.PluginHandle));
+				return Marshal.PtrToStringUni(this.PluginDescriptionFunc(this.PluginHandle));
 			}
 		}
-
-		Guid _guid;
+        
 		/// <summary>
 		/// 获取插件的全局唯一标识符。
 		/// </summary>
@@ -209,7 +208,7 @@ namespace NovelDownloader.Plugin
 			// 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
 			Dispose(true);
 			// TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
-			// GC.SuppressFinalize(this);
+			GC.SuppressFinalize(this);
 		}
 		#endregion
 	}

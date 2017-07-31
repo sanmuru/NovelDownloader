@@ -80,14 +80,14 @@ public:
 #endif
 };
 
-#if defined __cplusplus and defined C_EXPORTS
+#if defined __cplusplus & defined C_EXPORTS
 EXTERN_C
 {
 #endif
 typedef HANDLE HNOVELDOWNLOADPLUGIN;
 
 NOVELDOWNLOADERPLUGINCOREWIN32_API bool Plugin_TryGetBookToken(LPCTSTR, HNDTBook);
-#if defined __cplusplus and defined C_EXPORTS
+#if defined __cplusplus & defined C_EXPORTS
 }
 #endif
 #endif

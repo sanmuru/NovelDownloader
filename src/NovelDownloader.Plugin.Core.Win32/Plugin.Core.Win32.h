@@ -8,7 +8,7 @@
 #include "Version.h"
 #include <Windows.h>
 
-#if defined __cplusplus and defined C_EXPORTS
+#if defined __cplusplus & defined C_EXPORTS
 EXTERN_C
 {
 #endif
@@ -18,13 +18,11 @@ typedef HANDLE HPLUGIN;
 NOVELDOWNLOADERPLUGINCOREWIN32_API HPLUGIN LoadPlugin(GUID);
 NOVELDOWNLOADERPLUGINCOREWIN32_API void ReleasePlugin(HPLUGIN);
 
-typedef struct {
-	int count;
-	void *array;
-} array_info;
-NOVELDOWNLOADERPLUGINCOREWIN32_API array_info GetPluginList();
+NOVELDOWNLOADERPLUGINCOREWIN32_API HPLUGIN LoadPluginWithReleaseMethod(GUID, void(**)(HPLUGIN));
 
-#if defined __cplusplus and defined C_EXPORTS
+NOVELDOWNLOADERPLUGINCOREWIN32_API int GetPluginList(GUID**);
+
+#if defined __cplusplus & defined C_EXPORTS
 }
 #endif
 #endif

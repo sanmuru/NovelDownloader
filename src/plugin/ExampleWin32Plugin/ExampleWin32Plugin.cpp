@@ -12,7 +12,7 @@
 #define NOVELDOWNLOADERPLUGINCOREWIN32_EXPORTS
 #include <malloc.h>
 #include <Plugin.h>
-#if defined __cplusplus and defined C_EXPORTS
+#if defined __cplusplus & defined C_EXPORTS
 EXTERN_C
 {
 #endif
@@ -22,13 +22,13 @@ EXAMPLEWIN32PLUGIN_API HPLUGIN LoadPlugin(GUID guid)
 	if (true)
 	{
 		MALLOC(Plugin, plugin, sizeof(Plugin))
-		plugin->Name = TEXT("ExampleWin32Plugin");
-		plugin->DisplayName = TEXT("ExampleWin32Plugin");
-		Version version = { 1,0,0,TEXT("20161212"), TEXT("base") };
+		plugin->Name = L"ExampleWin32Plugin";
+		plugin->DisplayName = L"ExampleWin32Plugin";
+		Version version = { 1,0,0,L"20161212", L"base" };
 		Version min_version = DEFAULT_VERSION;
 		plugin->Version = &version;
 		plugin->MinVersion = &min_version;
-		plugin->Description = TEXT("This is an example Win32 plugin.");
+		plugin->Description = L"This is an example Win32 plugin. 这是一个Win32插件实例。";
 		plugin->Guid = &guid;
 
 #ifdef _DEBUG
@@ -79,14 +79,17 @@ EXAMPLEWIN32PLUGIN_API void ReleasePlugin(HPLUGIN hPlugin)
 	Plugin *plugin = FromHPLUGIN(hPlugin);
 	plugin = NULL;
 }
-#include <objbase.h>
-EXAMPLEWIN32PLUGIN_API array_info GetPluginList()
-{
-	MALLOC(GUID, guid_array, sizeof(GUID) * 1)
-	CoCreateGuid(&guid_array[0]);
-	array_info array = { 1, guid_array };
 
-	return array;
+#include <objbase.h>
+EXAMPLEWIN32PLUGIN_API int GetPluginList(GUID** plugins)
+{
+	int count = 1;
+	//MALLOC(GUID, guid_array, sizeof(GUID) * count)
+	GUID *guid_array = new GUID[1];
+	CoCreateGuid(&guid_array[0]);
+	*plugins = guid_array;
+
+	return count;
 }
 
 EXAMPLEWIN32PLUGIN_API LPCTSTR Plugin_Name(HPLUGIN hPlugin)
@@ -147,6 +150,6 @@ EXAMPLEWIN32PLUGIN_API LPCTSTR Version_Period(HVERSION hVersion){
 	return version->Period;
 }
 
-#if defined __cplusplus and defined C_EXPORTS
+#if defined __cplusplus & defined C_EXPORTS
 }
 #endif

@@ -16,7 +16,7 @@ typedef struct
 } _Version;
 typedef _Version Version;
 
-#if defined __cplusplus and defined C_EXPORTS
+#if defined __cplusplus & defined C_EXPORTS
 EXTERN_C
 {
 #endif
@@ -29,7 +29,7 @@ NOVELDOWNLOADERPLUGINCOREWIN32_API unsigned int Version_Revision(HVERSION);
 NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR Version_Date(HVERSION);
 NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR Version_Period(HVERSION);
 
-#if defined __cplusplus and defined C_EXPORTS
+#if defined __cplusplus & defined C_EXPORTS
 }
 #endif
 
