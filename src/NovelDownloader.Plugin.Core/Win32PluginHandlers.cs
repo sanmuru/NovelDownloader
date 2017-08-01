@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace NovelDownloader.Plugin
@@ -10,6 +11,6 @@ namespace NovelDownloader.Plugin
 	public delegate int DPluginGetPluginList(out IntPtr plugins);
 	
 	public delegate IntPtr DPluginInvocationReturnsString(IntPtr pluginHandle);
-	public delegate IntPtr DPluginInvocationReturnsVersion(IntPtr pluginHandle);
+    public delegate IntPtr DPluginInvocationReturnsVersion(IntPtr pluginHandle);
 	public delegate Guid DPluginInvocationReturnsGuid(IntPtr pluginHandle);
 }

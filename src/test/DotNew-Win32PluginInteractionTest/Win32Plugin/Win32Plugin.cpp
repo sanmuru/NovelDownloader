@@ -43,6 +43,17 @@ WIN32PLUGIN_API HPLUGIN LoadPluginWithReleaseMethod(GUID guid, OUT void(**phRele
 	return LoadPlugin(guid);
 }
 
+WIN32PLUGIN_API BOOL Plugin_Name(HPLUGIN hPlugin, LPTSTR name)
+{
+	if (hPlugin)
+	{
+		name = LPTSTR("name");
+		return true;
+	}
+	else
+		return false;
+}
+
 #ifdef WIN32PLUGIN_EXAMPLES
 // 这是导出变量的一个示例
 WIN32PLUGIN_API int nWin32Plugin=0;

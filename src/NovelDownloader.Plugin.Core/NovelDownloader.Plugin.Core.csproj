@@ -49,6 +49,7 @@
     <Compile Include="Win32Plugin.cs" />
     <Compile Include="Win32PluginHandlers.cs" />
     <Compile Include="Win32PluginManager.cs" />
+    <Compile Include="Win32PluginStuctures.cs" />
     <Compile Include="Win32Utility.cs" />
   </ItemGroup>
   <ItemGroup>

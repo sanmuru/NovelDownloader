@@ -3,3 +3,4 @@ EXPORTS
 	LoadPlugin
 	ReleasePlugin
 	LoadPluginWithReleaseMethod
+	Plugin_Name

@@ -50,6 +50,12 @@ namespace DotNetPluginManager
 
             IntPtr hPlugin = hLoadPlugin(guid);
 #endif
+            procAddress = GetProcAddress(hModule, "Plugin_Name");
+            var hPluginName = Marshal.GetDelegateForFunctionPointer<PluginNameHandler>(procAddress);
+            StringBuilder sb = new StringBuilder();
+            bool success = hPluginName(hPlugin, sb);
+            Console.WriteLine("{0}:    \"{1}\"", success, sb.ToString());
+
             hReleasePlugin(hPlugin);
 
             FreeLibrary(hModule);
@@ -57,7 +63,6 @@ namespace DotNetPluginManager
         }
 
 #if WithCallBack
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate IntPtr LoadPluginWithReleaseMethodHandler(Guid guid, out
 #if false
             IntPtr
@@ -66,11 +71,11 @@ namespace DotNetPluginManager
 #endif
             phRelease);
 #else
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate IntPtr LoadPluginHandler(Guid guid);
 #endif
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        
         delegate void ReleasePluginHandler(IntPtr hPlugin);
+
+        delegate bool PluginNameHandler(IntPtr hPlugin, StringBuilder sb);
     }
 }

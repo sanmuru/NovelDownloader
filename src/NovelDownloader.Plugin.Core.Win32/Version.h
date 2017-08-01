@@ -6,15 +6,15 @@
 #include "exports.h"
 #include <Windows.h>
 
-typedef struct
+struct _Version
 {
 	unsigned int Major; // 主版本号
 	unsigned int Minor; // 次版本号
 	unsigned int Revision; // 阶段版本号
 	LPCTSTR Date; // 日期版本号
 	LPCTSTR Period; // 希腊字母版本号
-} _Version;
-typedef _Version Version;
+};
+typedef _Version VERSION;
 
 #if defined __cplusplus & defined C_EXPORTS
 EXTERN_C
@@ -22,12 +22,12 @@ EXTERN_C
 #endif
 typedef HANDLE HVERSION; // 版本号结构的句柄。
 
-NOVELDOWNLOADERPLUGINCOREWIN32_API unsigned int Version_Major(HVERSION);
-NOVELDOWNLOADERPLUGINCOREWIN32_API unsigned int Version_Minor(HVERSION);
-NOVELDOWNLOADERPLUGINCOREWIN32_API unsigned int Version_Revision(HVERSION);
+NOVELDOWNLOADERPLUGINCOREWIN32_API unsigned int APIENTRY Version_Major(HVERSION);
+NOVELDOWNLOADERPLUGINCOREWIN32_API unsigned int APIENTRY Version_Minor(HVERSION);
+NOVELDOWNLOADERPLUGINCOREWIN32_API unsigned int APIENTRY Version_Revision(HVERSION);
 
-NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR Version_Date(HVERSION);
-NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR Version_Period(HVERSION);
+NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR APIENTRY Version_Date(HVERSION);
+NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR APIENTRY Version_Period(HVERSION);
 
 #if defined __cplusplus & defined C_EXPORTS
 }

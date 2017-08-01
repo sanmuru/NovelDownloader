@@ -11,3 +11,5 @@
 #else
 #define NOVELDOWNLOADERPLUGINCOREWIN32_API __declspec(dllimport)
 #endif
+
+#define APIENTRY WINAPI

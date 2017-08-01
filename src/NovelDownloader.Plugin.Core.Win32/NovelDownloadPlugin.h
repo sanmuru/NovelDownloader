@@ -29,8 +29,8 @@ struct NovelDownloadPluginInterface_
 
 	LPCTSTR Name; // 插件的名称。
 	LPCTSTR DisplayName; // 插件显示在插件管理器中的名称。
-	::Version *Version; // 插件的版本。
-	::Version *MinVersion; // 插件支持的最小版本。
+	::VERSION *Version; // 插件的版本。
+	::VERSION *MinVersion; // 插件支持的最小版本。
 	LPCTSTR Description; // 插件的描述。
 	GUID *Guid; // 插件的全局唯一标识符。
 
@@ -86,7 +86,7 @@ EXTERN_C
 #endif
 typedef HANDLE HNOVELDOWNLOADPLUGIN;
 
-NOVELDOWNLOADERPLUGINCOREWIN32_API bool Plugin_TryGetBookToken(LPCTSTR, HNDTBook);
+NOVELDOWNLOADERPLUGINCOREWIN32_API bool APIENTRY Plugin_TryGetBookToken(LPCTSTR, HNDTBook);
 #if defined __cplusplus & defined C_EXPORTS
 }
 #endif

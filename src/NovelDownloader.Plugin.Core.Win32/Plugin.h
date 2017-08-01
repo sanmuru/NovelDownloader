@@ -26,8 +26,8 @@ struct PluginInterface_
 
 	LPCTSTR Name; // 插件的名称。
 	LPCTSTR DisplayName; // 插件显示在插件管理器中的名称。
-	::Version *Version; // 插件的版本。
-	::Version *MinVersion; // 插件支持的最小版本。
+	::VERSION *Version; // 插件的版本。
+	::VERSION *MinVersion; // 插件支持的最小版本。
 	LPCTSTR Description; // 插件的描述。
 	GUID *Guid; // 插件的全局唯一标识符。
 
@@ -67,8 +67,8 @@ protected:
 public:
 	LPCTSTR Name; // 插件的名称。
 	LPCTSTR DisplayName; // 插件显示在插件管理器中的名称。
-	::Version *Version; // 插件的版本。
-	::Version *MinVersion; // 插件支持的最小版本。
+	::VERSION *Version; // 插件的版本。
+	::VERSION *MinVersion; // 插件支持的最小版本。
 	LPCTSTR Description; // 插件的描述。
 	GUID *Guid; // 插件的全局唯一标识符。
 
@@ -81,12 +81,12 @@ public:
 EXTERN_C
 {
 #endif
-NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR Plugin_Name(HPLUGIN);
-NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR Plugin_DisplayName(HPLUGIN);
-NOVELDOWNLOADERPLUGINCOREWIN32_API HVERSION Plugin_Version(HPLUGIN);
-NOVELDOWNLOADERPLUGINCOREWIN32_API HVERSION Plugin_MinVersion(HPLUGIN);
-NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR Plugin_Description(HPLUGIN);
-NOVELDOWNLOADERPLUGINCOREWIN32_API GUID Plugin_Guid(HPLUGIN);
+NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR APIENTRY Plugin_Name(HPLUGIN);
+NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR APIENTRY Plugin_DisplayName(HPLUGIN);
+NOVELDOWNLOADERPLUGINCOREWIN32_API HVERSION APIENTRY Plugin_Version(HPLUGIN);
+NOVELDOWNLOADERPLUGINCOREWIN32_API HVERSION APIENTRY Plugin_MinVersion(HPLUGIN);
+NOVELDOWNLOADERPLUGINCOREWIN32_API LPCTSTR APIENTRY Plugin_Description(HPLUGIN);
+NOVELDOWNLOADERPLUGINCOREWIN32_API GUID APIENTRY Plugin_Guid(HPLUGIN);
 #if defined __cplusplus & defined C_EXPORTS
 }
 #endif

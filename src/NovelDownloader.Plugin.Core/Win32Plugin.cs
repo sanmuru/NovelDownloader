@@ -73,16 +73,7 @@ namespace NovelDownloader.Plugin
 				return Marshal.PtrToStringUni(this.PluginDisplayNameFunc(this.PluginHandle));
 			}
 		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		private struct _version
-		{
-			public uint Major;
-			public uint Minor;
-			public uint Revision;
-			public IntPtr Date;
-			public IntPtr Period;
-		}
+        
 		/// <summary>
 		/// 获取插件的版本
 		/// </summary>
@@ -90,10 +81,10 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				_version version = (_version)Marshal.PtrToStructure(this.PluginVersionFunc(this.PluginHandle), typeof(_version));
+				VERSION version = (VERSION)Marshal.PtrToStructure(this.PluginVersionFunc(this.PluginHandle), typeof(VERSION));
 				Version v = new Version(version.Minor, version.Major, version.Revision,
-					Marshal.PtrToStringUni(version.Date),
-					Marshal.PtrToStringUni(version.Period)
+					version.Date,
+                    version.Period
 				);
 				return v;
 			}
@@ -106,10 +97,10 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				_version version = (_version)Marshal.PtrToStructure(this.PluginMinVersionFunc(this.PluginHandle), typeof(_version));
-				Version v = new Version(version.Minor, version.Major, version.Revision,
-					Marshal.PtrToStringUni(version.Date),
-					Marshal.PtrToStringUni(version.Period)
+				VERSION version = (VERSION)Marshal.PtrToStructure(this.PluginMinVersionFunc(this.PluginHandle), typeof(VERSION));
+                Version v = new Version(version.Minor, version.Major, version.Revision,
+                    version.Date,
+                    version.Period
 				);
 				return v;
 			}

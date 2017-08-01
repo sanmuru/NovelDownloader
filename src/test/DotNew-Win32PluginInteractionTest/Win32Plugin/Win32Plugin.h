@@ -17,6 +17,8 @@ WIN32PLUGIN_API void ReleasePlugin(HPLUGIN);
 
 WIN32PLUGIN_API HPLUGIN LoadPluginWithReleaseMethod(GUID, OUT void(**)(HPLUGIN));
 
+WIN32PLUGIN_API BOOL Plugin_Name(HPLUGIN, LPTSTR);
+
 #ifdef WIN32PLUGIN_EXAMPLES
 // 此类是从 Win32Plugin.dll 导出的
 class WIN32PLUGIN_API CWin32Plugin {

@@ -24,8 +24,8 @@ EXAMPLEWIN32PLUGIN_API HPLUGIN LoadPlugin(GUID guid)
 		MALLOC(Plugin, plugin, sizeof(Plugin))
 		plugin->Name = L"ExampleWin32Plugin";
 		plugin->DisplayName = L"ExampleWin32Plugin";
-		Version version = { 1,0,0,L"20161212", L"base" };
-		Version min_version = DEFAULT_VERSION;
+		VERSION version = { 1,0,0,L"20161212", L"base" };
+		VERSION min_version = DEFAULT_VERSION;
 		plugin->Version = &version;
 		plugin->MinVersion = &min_version;
 		plugin->Description = L"This is an example Win32 plugin. 这是一个Win32插件实例。";
@@ -84,9 +84,10 @@ EXAMPLEWIN32PLUGIN_API void ReleasePlugin(HPLUGIN hPlugin)
 EXAMPLEWIN32PLUGIN_API int GetPluginList(GUID** plugins)
 {
 	int count = 1;
-	//MALLOC(GUID, guid_array, sizeof(GUID) * count)
 	GUID *guid_array = new GUID[1];
+
 	CoCreateGuid(&guid_array[0]);
+	
 	*plugins = guid_array;
 
 	return count;
@@ -123,30 +124,30 @@ EXAMPLEWIN32PLUGIN_API GUID Plugin_Guid(HPLUGIN hPlugin){
 	return *plugin->Guid;
 }
 
-PSTRUCT_FROM_HANLDE(Version, HVERSION, hVersion)
+PSTRUCT_FROM_HANLDE(VERSION, HVERSION, hVersion)
 
 EXAMPLEWIN32PLUGIN_API unsigned int Version_Major(HVERSION hVersion){
-	Version *version = FromHVERSION(hVersion);
+	VERSION *version = FromHVERSION(hVersion);
 	return version->Major;
 }
 
 EXAMPLEWIN32PLUGIN_API unsigned int Version_Minor(HVERSION hVersion){
-	Version *version = FromHVERSION(hVersion);
+	VERSION *version = FromHVERSION(hVersion);
 	return version->Minor;
 }
 
 EXAMPLEWIN32PLUGIN_API unsigned int Version_Revision(HVERSION hVersion){
-	Version *version = FromHVERSION(hVersion);
+	VERSION *version = FromHVERSION(hVersion);
 	return version->Revision;
 }
 
 EXAMPLEWIN32PLUGIN_API LPCTSTR Version_Date(HVERSION hVersion){
-	Version *version = FromHVERSION(hVersion);
+	VERSION *version = FromHVERSION(hVersion);
 	return version->Date;
 }
 
 EXAMPLEWIN32PLUGIN_API LPCTSTR Version_Period(HVERSION hVersion){
-	Version *version = FromHVERSION(hVersion);
+	VERSION *version = FromHVERSION(hVersion);
 	return version->Period;
 }
 
