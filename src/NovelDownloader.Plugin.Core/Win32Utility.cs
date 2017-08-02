@@ -9,15 +9,45 @@ namespace NovelDownloader.Plugin
 {
     internal static class Win32Utility
     {
-        public static T PtrToObjectOrDefault<T>(IntPtr ptr, Func<IntPtr, T> marshalFuc, T defaultValue)
+        #region PtrToObjectOrDefault
+        /// <summary>
+        /// 将数据从非托管内存块经过指定封送处理到指定类型的托管对象。
+        /// </summary>
+        /// <typeparam name="T">指定的托管对象的类型。</typeparam>
+        /// <param name="ptr">指向非托管内存块的指针。</param>
+        /// <param name="marshalFunc">指定封送处理。</param>
+        /// <param name="defaultValue">操作前提条件不满足时返回的默认值。此方法的前提条件是 <paramref name="ptr"/> 不为 <see cref="IntPtr.Zero"/> 。</param>
+        /// <returns>当 <paramref name="ptr"/> 为 <see cref="IntPtr.Zero"/> 时，返回 <paramref name="defaultValue"/> ；否则返回数据从非托管内存块经过指定封送处理到指定类型的托管对象。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="marshalFunc"/> 的值为 null 。</exception>
+        public static T PtrToObjectOrDefault<T>(IntPtr ptr, Func<IntPtr, T> marshalFunc, T defaultValue)
         {
-            if (marshalFuc == null) throw new ArgumentNullException(nameof(marshalFuc));
+            if (marshalFunc == null) throw new ArgumentNullException(nameof(marshalFunc));
 
-            if (ptr == IntPtr.Zero)
-                return defaultValue;
-            else
-                return marshalFuc(ptr);
+            return Win32Utility.PtrToObjectOrDefault(ptr, (_ptr => _ptr != IntPtr.Zero), marshalFunc, defaultValue);
         }
+
+        /// <summary>
+        /// 将数据从非托管内存块经过指定封送处理到指定类型的托管对象。
+        /// </summary>
+        /// <typeparam name="T">指定的托管对象的类型。</typeparam>
+        /// <param name="ptr">指向非托管内存块的指针。</param>
+        /// <param name="predicate">检测操作前提条件是否满足。</param>
+        /// <param name="marshalFunc">指定封送处理。</param>
+        /// <param name="defaultValue">操作前提条件不满足时返回的默认值。</param>
+        /// <returns>当检测操作前提条件满足时，返回 <paramref name="defaultValue"/> ；否则返回数据从非托管内存块经过指定封送处理到指定类型的托管对象。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="predicate"/> 的值为 null 。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="marshalFunc"/> 的值为 null 。</exception>
+        public static T PtrToObjectOrDefault<T>(IntPtr ptr, Predicate<IntPtr> predicate, Func<IntPtr, T> marshalFunc, T defaultValue)
+        {
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+            if (marshalFunc == null) throw new ArgumentNullException(nameof(marshalFunc));
+
+            if (predicate(ptr))
+                return marshalFunc(ptr);
+            else
+                return defaultValue;
+        }
+        #endregion
 
         #region MarshalDelegateFromFunctionPointer
         /// <summary>

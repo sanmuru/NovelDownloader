@@ -55,8 +55,8 @@ static void CreateInstance_NovelDownloadPluginInterface_(NovelDownloadPluginInte
 	ndpi.reserved_inner_plugin = NULL;
 	ndpi.Name = TEXT(EMPTY_STRING);
 	ndpi.DisplayName = TEXT(EMPTY_STRING);
-	*ndpi.Version = DEFAULT_VERSION;
-	*ndpi.MinVersion = DEFAULT_VERSION;
+	DEFAULT_VERSION(ndpi.Version);
+	DEFAULT_VERSION(ndpi.MinVersion);
 	ndpi.Description = TEXT(EMPTY_STRING);
 	*ndpi.Guid = DEFAULT_GUID;
 	ndpi.TryGetBookToken = NULL;

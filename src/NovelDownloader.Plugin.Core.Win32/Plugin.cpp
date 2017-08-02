@@ -8,8 +8,8 @@ Plugin_::Plugin_()
 	this->inner_plugin = this; // 内部的指针指向自身，以便逻辑基类调用子类的成员。
 	this->Name = LPCTSTR(EMPTY_STRING);
 	this->DisplayName = LPCTSTR(EMPTY_STRING);
-	*this->Version = DEFAULT_VERSION;
-	*this->MinVersion = DEFAULT_VERSION;
+	DEFAULT_VERSION(this->Version);
+	DEFAULT_VERSION(this->MinVersion);
 	this->Description = LPCTSTR(EMPTY_STRING);
 	*this->Guid = DEFAULT_GUID;
 }
