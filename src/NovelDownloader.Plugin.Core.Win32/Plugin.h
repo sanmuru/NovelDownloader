@@ -50,8 +50,8 @@ static void CreateInstance_PluginInterface_(PluginInterface_ *p_pi)
 	pi.reserved_inner_plugin = NULL;
 	pi.Name = TEXT(EMPTY_STRING);
 	pi.DisplayName = TEXT(EMPTY_STRING);
-	*pi.Version = DEFAULT_VERSION;
-	*pi.MinVersion = DEFAULT_VERSION;
+	DEFAULT_VERSION(pi.Version);
+	DEFAULT_VERSION(pi.MinVersion);
 	pi.Description = TEXT(EMPTY_STRING);
 	*pi.Guid = DEFAULT_GUID;
 

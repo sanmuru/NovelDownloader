@@ -82,13 +82,10 @@ namespace NovelDownloader.Plugin
             IntPtr hModule = this.LoadLibraryFunc(pluginFileName);
             if (hModule == IntPtr.Zero) throw new Win32Exception(string.Format("无法加载\"{0}\"。", Path.GetFullPath(pluginFileName)), new Win32Exception(Marshal.GetLastWin32Error()));
 
-            DPluginLoad loadPluginFunc;
-            Win32Utility.MarshalDelegateFromFunctionPointer(out loadPluginFunc, this.GetProcAddressFunc, hModule, "LoadPlugin");
-            DPluginRelease releasePluginFunc;
-            Win32Utility.MarshalDelegateFromFunctionPointer(out releasePluginFunc, this.GetProcAddressFunc, hModule, "ReleasePlugin");
+            Win32Utility.MarshalDelegateFromFunctionPointer(out DPluginLoad loadPluginFunc, this.GetProcAddressFunc, hModule, "LoadPlugin");
+            Win32Utility.MarshalDelegateFromFunctionPointer(out DPluginRelease releasePluginFunc, this.GetProcAddressFunc, hModule, "ReleasePlugin");
 
-            DPluginGetPluginList getPluginListFunc;
-            Win32Utility.MarshalDelegateFromFunctionPointer(out getPluginListFunc, this.GetProcAddressFunc, hModule, "GetPluginList", "无法获取插件列表。");
+            Win32Utility.MarshalDelegateFromFunctionPointer(out DPluginGetPluginList getPluginListFunc, this.GetProcAddressFunc, hModule, "GetPluginList", "无法获取插件列表。");
 
             int count = getPluginListFunc(out IntPtr guid_array);
             foreach (Guid pluginGuid in PtrToStructureEnumerable<Guid>(guid_array, count))

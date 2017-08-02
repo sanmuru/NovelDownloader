@@ -10,7 +10,7 @@ namespace NovelDownloader.Plugin
     /// 表示 Win32 插件版本的 C++ 结构 VERSION 的映射。
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct VERSION
+    internal struct VERSION
     {
         [MarshalAs(UnmanagedType.U4)]
         private uint major;

@@ -9,7 +9,7 @@ using System.Text;
 namespace NovelDownloader.Plugin
 {
 	/// <summary>
-	/// Win32插件。
+	/// Win32 插件。
 	/// </summary>
 	internal class Win32Plugin : IWin32Plugin
 	{
@@ -28,29 +28,35 @@ namespace NovelDownloader.Plugin
 		protected internal DPluginRelease ReleasePlugin;
 
 		/// <summary>
-		/// 封装了Win32Dll中获取插件名称的函数。
+		/// 封装了 Win32 Dll 中获取插件名称的函数。
 		/// </summary>
 		protected internal DPluginInvocationReturnsString PluginNameFunc;
-		/// <summary>
-		/// 封装了Win32Dll中获取插件显示在插件管理器中的名称的函数。
-		/// </summary>
-		protected internal DPluginInvocationReturnsString PluginDisplayNameFunc;
-		/// <summary>
-		/// 封装了Win32Dll中获取插件版本的函数。
-		/// </summary>
-		protected internal DPluginInvocationReturnsVersion PluginVersionFunc;
-		/// <summary>
-		/// 封装了Win32Dll中获取插件支持的最小版本的函数。
-		/// </summary>
-		protected internal DPluginInvocationReturnsVersion PluginMinVersionFunc;
-		/// <summary>
-		/// 封装了Win32Dll中获取插件描述的函数。
-		/// </summary>
-		protected internal DPluginInvocationReturnsString PluginDescriptionFunc;
-		/// <summary>
-		/// 封装了Win32Dll中获取插件全局唯一标识符的函数。
-		/// </summary>
-		protected internal DPluginInvocationReturnsGuid PluginGuidFunc;
+        /// <summary>
+        /// 封装了 Win32 Dll 中获取插件显示在插件管理器中的名称的函数。
+        /// </summary>
+        protected internal DPluginInvocationReturnsString PluginDisplayNameFunc;
+        /// <summary>
+        /// 封装了 Win32 Dll 中获取插件版本的函数。
+        /// </summary>
+        protected internal DPluginInvocationReturnsVersion PluginVersionFunc;
+        /// <summary>
+        /// 封装了 Win32 Dll 中获取插件支持的最小版本的函数。
+        /// </summary>
+        protected internal DPluginInvocationReturnsVersion PluginMinVersionFunc;
+        /// <summary>
+        /// 封装了 Win32 Dll 中获取插件描述的函数。
+        /// </summary>
+        protected internal DPluginInvocationReturnsString PluginDescriptionFunc;
+        /// <summary>
+        /// 封装了 Win32 Dll 中获取插件全局唯一标识符的函数。
+        /// </summary>
+        protected internal DPluginInvocationReturnsGuid PluginGuidFunc;
+
+        protected internal DPluginInvocationReturnsUInt32 VersionMajorFunc;
+        protected internal DPluginInvocationReturnsUInt32 VersionMinorFunc;
+        protected internal DPluginInvocationReturnsUInt32 VersionRevisionFunc;
+        protected internal DPluginInvocationReturnsString VersionDateFunc;
+        protected internal DPluginInvocationReturnsString VersionPeriodFunc;
 
 		/// <summary>
 		/// 获取插件的名字。
@@ -81,11 +87,14 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				VERSION version = (VERSION)Marshal.PtrToStructure(this.PluginVersionFunc(this.PluginHandle), typeof(VERSION));
-				Version v = new Version(version.Minor, version.Major, version.Revision,
-					version.Date,
-                    version.Period
-				);
+                IntPtr hVERSION = this.PluginVersionFunc(this.PluginHandle);
+                Version v = new Version(
+                    this.VersionMajorFunc(hVERSION),
+                    this.VersionMinorFunc(hVERSION),
+                    this.VersionRevisionFunc(hVERSION),
+                    Win32Utility.PtrToObjectOrDefault(this.VersionDateFunc(hVERSION), Marshal.PtrToStringUni, null),
+                    Win32Utility.PtrToObjectOrDefault(this.VersionPeriodFunc(hVERSION), Marshal.PtrToStringUni, null)
+                );
 				return v;
 			}
 		}
@@ -97,12 +106,15 @@ namespace NovelDownloader.Plugin
 		{
 			get
 			{
-				VERSION version = (VERSION)Marshal.PtrToStructure(this.PluginMinVersionFunc(this.PluginHandle), typeof(VERSION));
-                Version v = new Version(version.Minor, version.Major, version.Revision,
-                    version.Date,
-                    version.Period
-				);
-				return v;
+                IntPtr hVERSION = this.PluginMinVersionFunc(this.PluginHandle);
+                Version v = new Version(
+                    this.VersionMajorFunc(hVERSION),
+                    this.VersionMinorFunc(hVERSION),
+                    this.VersionRevisionFunc(hVERSION),
+                    Win32Utility.PtrToObjectOrDefault(this.VersionDateFunc(hVERSION), Marshal.PtrToStringUni, null),
+                    Win32Utility.PtrToObjectOrDefault(this.VersionPeriodFunc(hVERSION), Marshal.PtrToStringUni, null)
+                );
+                return v;
 			}
 		}
 
@@ -137,7 +149,19 @@ namespace NovelDownloader.Plugin
 			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginMinVersionFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginMinVersionFuncName);
 			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginDescriptionFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginDescriptionFuncName);
 			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginGuidFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginGuidFuncName);
-		}
+            
+            const string VersionMajorFuncName = "Version_Major";
+            const string VersionMinorFuncName = "Version_Minor";
+            const string VersionRevisionFuncName = "Version_Revision";
+            const string VersionDateFuncName = "Version_Date";
+            const string VersionPeriodFuncName = "Version_Period";
+
+            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionMajorFunc, pluginManager.GetProcAddressFunc, moduleHandle, VersionMajorFuncName);
+            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionMinorFunc, pluginManager.GetProcAddressFunc, moduleHandle, VersionMinorFuncName);
+            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionRevisionFunc, pluginManager.GetProcAddressFunc, moduleHandle, VersionRevisionFuncName);
+            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionDateFunc, pluginManager.GetProcAddressFunc, moduleHandle, VersionDateFuncName);
+            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionPeriodFunc, pluginManager.GetProcAddressFunc, moduleHandle, VersionPeriodFuncName);
+        }
 
 		/// <summary>
 		/// 加载插件。

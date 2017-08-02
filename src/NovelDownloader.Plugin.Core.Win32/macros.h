@@ -7,7 +7,17 @@
 #include <Windows.h>
 
 #define EMPTY_STRING ""
-#define DEFAULT_VERSION { 0,0,0,NULL,NULL }
+
+#include "Version.h"
+#define NEW_VERSION(param_name, major, minor, revision, date, period)\
+param_name = (VERSION*)malloc(4 + 4 + 4 + 4 + 4);\
+param_name->Major = major;\
+param_name->Minor = minor;\
+param_name->Revision = revision;\
+param_name->Date = date;\
+param_name->Period = period;
+#define DEFAULT_VERSION(param_name) NEW_VERSION(param_name, 0, 0, 0, NULL, NULL)
+
 #define DEFAULT_GUID { 0,0,0,{ '0','0','0','0' } }
 
 #ifdef __cplusplus
