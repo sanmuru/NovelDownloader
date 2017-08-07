@@ -134,7 +134,7 @@ namespace NovelDownloader.Plugin
 		/// </summary>
 		public Guid Guid { get; internal set; }
 		
-		protected internal Win32Plugin(IWin32PluginManager pluginManager, IntPtr moduleHandle)
+		protected internal Win32Plugin(IntPtr moduleHandle)
 		{
 			const string PluginNameFuncName = "Plugin_Name";
 			const string PluginDisplayNameFuncName = "Plugin_DisplayName";
@@ -143,12 +143,12 @@ namespace NovelDownloader.Plugin
 			const string PluginDescriptionFuncName = "Plugin_Description";
 			const string PluginGuidFuncName = "Plugin_Guid";
 
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginNameFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginNameFuncName);
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginDisplayNameFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginDisplayNameFuncName);
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginVersionFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginVersionFuncName);
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginMinVersionFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginMinVersionFuncName);
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginDescriptionFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginDescriptionFuncName);
-			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginGuidFunc, pluginManager.GetProcAddressFunc, moduleHandle, PluginGuidFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginNameFunc, Win32Utility.GetProcAddress, moduleHandle, PluginNameFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginDisplayNameFunc, Win32Utility.GetProcAddress, moduleHandle, PluginDisplayNameFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginVersionFunc, Win32Utility.GetProcAddress, moduleHandle, PluginVersionFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginMinVersionFunc, Win32Utility.GetProcAddress, moduleHandle, PluginMinVersionFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginDescriptionFunc, Win32Utility.GetProcAddress, moduleHandle, PluginDescriptionFuncName);
+			Win32Utility.MarshalDelegateFromFunctionPointer(out this.PluginGuidFunc, Win32Utility.GetProcAddress, moduleHandle, PluginGuidFuncName);
             
             const string VersionMajorFuncName = "Version_Major";
             const string VersionMinorFuncName = "Version_Minor";
@@ -156,11 +156,11 @@ namespace NovelDownloader.Plugin
             const string VersionDateFuncName = "Version_Date";
             const string VersionPeriodFuncName = "Version_Period";
 
-            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionMajorFunc, pluginManager.GetProcAddressFunc, moduleHandle, VersionMajorFuncName);
-            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionMinorFunc, pluginManager.GetProcAddressFunc, moduleHandle, VersionMinorFuncName);
-            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionRevisionFunc, pluginManager.GetProcAddressFunc, moduleHandle, VersionRevisionFuncName);
-            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionDateFunc, pluginManager.GetProcAddressFunc, moduleHandle, VersionDateFuncName);
-            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionPeriodFunc, pluginManager.GetProcAddressFunc, moduleHandle, VersionPeriodFuncName);
+            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionMajorFunc, Win32Utility.GetProcAddress, moduleHandle, VersionMajorFuncName);
+            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionMinorFunc, Win32Utility.GetProcAddress, moduleHandle, VersionMinorFuncName);
+            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionRevisionFunc, Win32Utility.GetProcAddress, moduleHandle, VersionRevisionFuncName);
+            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionDateFunc, Win32Utility.GetProcAddress, moduleHandle, VersionDateFuncName);
+            Win32Utility.MarshalDelegateFromFunctionPointer(out this.VersionPeriodFunc, Win32Utility.GetProcAddress, moduleHandle, VersionPeriodFuncName);
         }
 
 		/// <summary>

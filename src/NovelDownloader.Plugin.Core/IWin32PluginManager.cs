@@ -10,17 +10,5 @@ namespace NovelDownloader.Plugin
 	/// </summary>
 	public interface IWin32PluginManager : IPluginManager, IDisposable
 	{
-		/// <summary>
-		/// 封装LoadLibrary系统API的委托。
-		/// </summary>
-		LoadLibrary LoadLibraryFunc { get; }
-		/// <summary>
-		/// 封装FreeLibrary系统API的委托。
-		/// </summary>
-		FreeLibrary FreeLibraryFunc { get; }
-		/// <summary>
-		/// 封装GetProcAddress系统API的委托。
-		/// </summary>
-		GetProcAddress GetProcAddressFunc { get; }
 	}
 }

@@ -9,6 +9,20 @@ namespace NovelDownloader.Plugin
 {
     internal static class Win32Utility
     {
+        #region Win32 Methods
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr LoadLibrary(string lpFileName);
+
+        [DllImport("kernel32.dll")]
+        public static extern void FreeLibrary(IntPtr hModule);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr GetProcAddress(IntPtr hModule, string lpFileName);
+
+        [DllImport("kernel32.dll")]
+        public static extern int GetLastError();
+        #endregion
+
         #region PtrToObjectOrDefault
         /// <summary>
         /// 将数据从非托管内存块经过指定封送处理到指定类型的托管对象。

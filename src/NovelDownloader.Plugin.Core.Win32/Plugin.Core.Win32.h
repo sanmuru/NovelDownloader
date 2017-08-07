@@ -5,7 +5,6 @@
 
 #include "exports.h"
 #include "macros.h"
-#include "Version.h"
 #include <Windows.h>
 
 #if defined __cplusplus & defined C_EXPORTS

@@ -3,6 +3,8 @@
 #ifndef _PLUGIN_H_
 #define _PLUGIN_H_
 
+#include "Version.h"
+
 struct PluginInterface_;
 struct Plugin_;
 
