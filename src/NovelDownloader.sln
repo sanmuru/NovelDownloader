@@ -65,6 +65,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sfacg.com", "plugin\sfacg.c
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovelDownloaderPluginTest", "NovelDownloaderPluginTest\NovelDownloaderPluginTest.csproj", "{FF51DE5E-CE43-4A7A-9A44-AB45EBBCF492}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamLu.NovelDownloader.Utils", "core\SamLu.NovelDownloader.Utils\SamLu.NovelDownloader.Utils.csproj", "{98D1332B-E400-4B0C-88F1-6B8A40D580B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -303,6 +305,18 @@ Global
 		{FF51DE5E-CE43-4A7A-9A44-AB45EBBCF492}.Release|x64.Build.0 = Release|Any CPU
 		{FF51DE5E-CE43-4A7A-9A44-AB45EBBCF492}.Release|x86.ActiveCfg = Release|Any CPU
 		{FF51DE5E-CE43-4A7A-9A44-AB45EBBCF492}.Release|x86.Build.0 = Release|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Debug|x64.Build.0 = Debug|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Debug|x86.Build.0 = Debug|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Release|x64.ActiveCfg = Release|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Release|x64.Build.0 = Release|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Release|x86.ActiveCfg = Release|Any CPU
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -327,5 +341,6 @@ Global
 		{99FB16F7-4D15-451D-90C1-8E83E08F9A57} = {C515F1AA-706A-450F-BA6C-59E66A140759}
 		{5A0FCD1C-336D-4A20-B67E-529FF44E23D6} = {99FB16F7-4D15-451D-90C1-8E83E08F9A57}
 		{FF51DE5E-CE43-4A7A-9A44-AB45EBBCF492} = {6DFAC412-00F3-4C1D-84A7-DFBBB81D8BC2}
+		{98D1332B-E400-4B0C-88F1-6B8A40D580B3} = {1298F92B-156A-4F7F-B3B5-3F3BE7059234}
 	EndGlobalSection
 EndGlobal

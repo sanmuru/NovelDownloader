@@ -103,7 +103,7 @@ namespace NovelDownloader.Plugin.qidian.com
 			if (description == null) throw exception;
 			else this.Description = description;
 
-			this.catalogNode = doc.GetElementbyId("j-catalogWrap");
+			this.catelogNode = doc.GetElementbyId("j-catalogWrap");
 		}
 
 		/// <summary>
@@ -120,7 +120,7 @@ namespace NovelDownloader.Plugin.qidian.com
 		}
 
 		#region StartCreep
-		HtmlNode catalogNode;
+		HtmlNode catelogNode;
 		protected override bool CanStartCreep()
 		{
 			if (
@@ -131,9 +131,9 @@ namespace NovelDownloader.Plugin.qidian.com
 
 			try
 			{
-				if (this.catalogNode == null) return false;
+				if (this.catelogNode == null) return false;
 
-				HtmlNodeCollection volumes = this.catalogNode.SelectNodes("div[@class='volume-wrap']/div[@class='volume']");
+				HtmlNodeCollection volumes = this.catelogNode.SelectNodes("div[@class='volume-wrap']/div[@class='volume']");
 				if (volumes == null) return false;
 
 				Dictionary<string, IEnumerable<HtmlNode>> dic = new Dictionary<string, IEnumerable<HtmlNode>>();

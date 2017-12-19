@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace SamLu.NovelDownloader.Plugin.sfacg.com
 {
-    public sealed class NovelDownloader : INovelDownloadPlugin
+    internal sealed class NovelDownloader : INovelDownloadPlugin
     {
         internal static readonly Uri HostUri = new Uri("http://book.sfacg.com/", UriKind.Absolute);
 
@@ -86,6 +86,10 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
             catch (Exception)
             {
                 bookToken = null;
+
+#if DEBUG
+                throw;
+#endif
 
                 return false;
             }

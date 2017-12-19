@@ -16,11 +16,15 @@ namespace NovelDownloaderPluginTest
 
         static void Main(string[] args)
         {
-            const string plugins_directory = "plugins";
+            const string plugins_directory = @"plugins";
 
             if (!Directory.Exists(plugins_directory)) return;
 
-            Directory.GetFiles(plugins_directory)
+            new string[]
+            {
+                "sfacg.com.dll"
+            }
+                .Select(file=>file)
                 .Where(file => Path.GetExtension(file).ToLower() == ".dll")
                 .ToList()
                 .ForEach(file =>
