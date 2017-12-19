@@ -105,10 +105,11 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 			TabItem item = tc.SelectedItem as TabItem;
 			if (item != null)
 			{
-				if (item == this.tiHTML_DOM) this.load_DOM();
-				else if (item == this.tiHTML_SORTED) this.load_SORTED();
-				else if (item == this.tiHTML_SOURCE) this.load_SOURCE();
-				else throw new NotSupportedException();
+                if (item == this.tiHTML_DOM) this.load_DOM();
+                else if (item == this.tiHTML_SORTED) this.load_SORTED();
+                else if (item == this.tiHTML_SOURCE) this.load_SOURCE();
+                else if (item == this.tiHTML_DocumentViewer) ; // Do nothing.
+                else throw new NotSupportedException();
 			}
 
 			txtCommand_TextChanged(this.txtCommand, null);
@@ -144,147 +145,148 @@ namespace NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater
 			txt.Foreground = getBrush(Colors.Black);
 
 			TabItem item = this.tc.SelectedItem as TabItem;
-			if (item == null) return;
-			else if (item == this.tiHTML_DOM)
-			{
-				if (_document == null) return;
+            if (item == null) return;
+            else if (item == this.tiHTML_DOM)
+            {
+                if (_document == null) return;
 
-				#region tiHTML_DOM
-				try
-				{
-					if (this.previous_DOM_mapKeys != null)
-					{
-						foreach (HtmlNode node in this.previous_DOM_mapKeys)
-						{
-							if (this._DOM_map.ContainsKey(node))
-								this._DOM_map[node].Background = getBrush(Colors.Transparent);
-						}
-					}
+                #region tiHTML_DOM
+                try
+                {
+                    if (this.previous_DOM_mapKeys != null)
+                    {
+                        foreach (HtmlNode node in this.previous_DOM_mapKeys)
+                        {
+                            if (this._DOM_map.ContainsKey(node))
+                                this._DOM_map[node].Background = getBrush(Colors.Transparent);
+                        }
+                    }
 
-					if (string.IsNullOrEmpty(txt.Text)) return;
+                    if (string.IsNullOrEmpty(txt.Text)) return;
 
-					HtmlNodeCollection nodes = _document.DocumentNode.SelectNodes(txt.Text);
+                    HtmlNodeCollection nodes = _document.DocumentNode.SelectNodes(txt.Text);
 
-					foreach (HtmlNode node in nodes)
-					{
-						if (this._DOM_map.ContainsKey(node))
-							this._DOM_map[node].Background = getBrush(0xFF, 0x7F, 0xFF);
-					}
-					this.previous_DOM_mapKeys = nodes;
-				}
-				catch (Exception)
-				{
-					txt.Foreground = getBrush(Colors.Red);
-				}
-				#endregion
-			}
-			else if (item == this.tiHTML_SORTED)
-			{
-				#region tiHTML_SOURTED
-				try
-				{
-					foreach (TextRange range in previous_SORTED_textRanges)
-					{
-						range.ApplyPropertyValue(TextElement.BackgroundProperty, getBrush(Colors.Transparent));
-					}
+                    foreach (HtmlNode node in nodes)
+                    {
+                        if (this._DOM_map.ContainsKey(node))
+                            this._DOM_map[node].Background = getBrush(0xFF, 0x7F, 0xFF);
+                    }
+                    this.previous_DOM_mapKeys = nodes;
+                }
+                catch (Exception)
+                {
+                    txt.Foreground = getBrush(Colors.Red);
+                }
+                #endregion
+            }
+            else if (item == this.tiHTML_SORTED)
+            {
+                #region tiHTML_SOURTED
+                try
+                {
+                    foreach (TextRange range in previous_SORTED_textRanges)
+                    {
+                        range.ApplyPropertyValue(TextElement.BackgroundProperty, getBrush(Colors.Transparent));
+                    }
 
-					if (string.IsNullOrEmpty(txt.Text)) return;
+                    if (string.IsNullOrEmpty(txt.Text)) return;
 
-					TextRange contentRange = new TextRange(this.fdsvHTML_SORTED.Document.ContentStart, this.fdsvHTML_SORTED.Document.ContentEnd);
-					string source = contentRange.Text;
-					MatchCollection matches = Regex.Matches(source, txt.Text);
+                    TextRange contentRange = new TextRange(this.fdsvHTML_SORTED.Document.ContentStart, this.fdsvHTML_SORTED.Document.ContentEnd);
+                    string source = contentRange.Text;
+                    MatchCollection matches = Regex.Matches(source, txt.Text);
 
-					foreach (Match match in matches)
-					{
-						int index = 0;
-						TextPointer position = this.fdsvHTML_SORTED.Document.ContentStart;
-						TextPointer start = null;
-						TextPointer end = null;
-						while (position != null)
-						{
-							if (position.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
-							{
-								string text = position.GetTextInRun(LogicalDirection.Forward);
-								if (index <= match.Index && (index + text.Length) > match.Index)
-									start = position.GetPositionAtOffset(match.Index - index);
-								if (index <= (match.Index + match.Length) && (index + text.Length) > (match.Index + match.Length))
-									end = position.GetPositionAtOffset(match.Index + match.Length - index);
-								index += text.Length;
-							}
+                    foreach (Match match in matches)
+                    {
+                        int index = 0;
+                        TextPointer position = this.fdsvHTML_SORTED.Document.ContentStart;
+                        TextPointer start = null;
+                        TextPointer end = null;
+                        while (position != null)
+                        {
+                            if (position.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
+                            {
+                                string text = position.GetTextInRun(LogicalDirection.Forward);
+                                if (index <= match.Index && (index + text.Length) > match.Index)
+                                    start = position.GetPositionAtOffset(match.Index - index);
+                                if (index <= (match.Index + match.Length) && (index + text.Length) > (match.Index + match.Length))
+                                    end = position.GetPositionAtOffset(match.Index + match.Length - index);
+                                index += text.Length;
+                            }
 
-							if (start != null && end != null) break;
+                            if (start != null && end != null) break;
 
-							position = position.GetNextContextPosition(LogicalDirection.Forward);
-						}
+                            position = position.GetNextContextPosition(LogicalDirection.Forward);
+                        }
 
-						if (start != null && end != null)
-						{
-							TextRange range = new TextRange(start, end);
-							range.ApplyPropertyValue(TextElement.BackgroundProperty, getBrush(0xFF, 0x7F, 0xFF));
-							this.previous_SORTED_textRanges.Add(range);
-						}
-					}
-				}
-				catch (Exception)
-				{
-					txt.Foreground = getBrush(Colors.Red);
-				}
-				#endregion
-			}
-			else if (item == this.tiHTML_SOURCE)
-			{
-				if (this._source == null) return;
+                        if (start != null && end != null)
+                        {
+                            TextRange range = new TextRange(start, end);
+                            range.ApplyPropertyValue(TextElement.BackgroundProperty, getBrush(0xFF, 0x7F, 0xFF));
+                            this.previous_SORTED_textRanges.Add(range);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    txt.Foreground = getBrush(Colors.Red);
+                }
+                #endregion
+            }
+            else if (item == this.tiHTML_SOURCE)
+            {
+                if (this._source == null) return;
 
-				#region tiHTML_SOURCE
-				try
-				{
-					foreach (TextRange range in previous_SOURCE_textRanges)
-					{
-						range.ApplyPropertyValue(TextElement.BackgroundProperty, getBrush(Colors.Transparent));
-					}
+                #region tiHTML_SOURCE
+                try
+                {
+                    foreach (TextRange range in previous_SOURCE_textRanges)
+                    {
+                        range.ApplyPropertyValue(TextElement.BackgroundProperty, getBrush(Colors.Transparent));
+                    }
 
-					if (string.IsNullOrEmpty(txt.Text)) return;
+                    if (string.IsNullOrEmpty(txt.Text)) return;
 
-					MatchCollection matches = Regex.Matches(_source.Replace(Environment.NewLine, string.Empty), txt.Text);
-					foreach (Match match in matches)
-					{
-						int index = 0;
-						TextPointer position = this.rtbHTML_SOURCE.Document.ContentStart;
-						TextPointer start = null;
-						TextPointer end = null;
-						while (position != null)
-						{
-							if (position.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
-							{
-								string text = position.GetTextInRun(LogicalDirection.Forward);
-								if (index <= match.Index && (index + text.Length) > match.Index)
-									start = position.GetPositionAtOffset(match.Index - index);
-								if (index <= (match.Index + match.Length) && (index + text.Length) > (match.Index + match.Length))
-									end = position.GetPositionAtOffset(match.Index + match.Length - index);
-								index += text.Length;
-							}
+                    MatchCollection matches = Regex.Matches(_source.Replace(Environment.NewLine, string.Empty), txt.Text);
+                    foreach (Match match in matches)
+                    {
+                        int index = 0;
+                        TextPointer position = this.rtbHTML_SOURCE.Document.ContentStart;
+                        TextPointer start = null;
+                        TextPointer end = null;
+                        while (position != null)
+                        {
+                            if (position.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
+                            {
+                                string text = position.GetTextInRun(LogicalDirection.Forward);
+                                if (index <= match.Index && (index + text.Length) > match.Index)
+                                    start = position.GetPositionAtOffset(match.Index - index);
+                                if (index <= (match.Index + match.Length) && (index + text.Length) > (match.Index + match.Length))
+                                    end = position.GetPositionAtOffset(match.Index + match.Length - index);
+                                index += text.Length;
+                            }
 
-							if (start != null && end != null) break;
+                            if (start != null && end != null) break;
 
-							position = position.GetNextContextPosition(LogicalDirection.Forward);
-						}
+                            position = position.GetNextContextPosition(LogicalDirection.Forward);
+                        }
 
-						if (start != null && end != null)
-						{
-							TextRange range = new TextRange(start, end);
-							range.ApplyPropertyValue(TextElement.BackgroundProperty, getBrush(0xFF, 0x7F, 0xFF));
-							this.previous_SOURCE_textRanges.Add(range);
-						}
-					}
-				}
-				catch (Exception)
-				{
-					txt.Foreground = getBrush(Colors.Red);
-				}
+                        if (start != null && end != null)
+                        {
+                            TextRange range = new TextRange(start, end);
+                            range.ApplyPropertyValue(TextElement.BackgroundProperty, getBrush(0xFF, 0x7F, 0xFF));
+                            this.previous_SOURCE_textRanges.Add(range);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    txt.Foreground = getBrush(Colors.Red);
+                }
 
-				#endregion
-			}
-			else throw new NotSupportedException();
+                #endregion
+            }
+            else if (item == this.tiHTML_DocumentViewer) ; // Do nothing.
+            else throw new NotSupportedException();
 		}
 
 		int xpathNO = 0;

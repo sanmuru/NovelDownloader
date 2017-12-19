@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater"
+        xmlns:controls="clr-namespace:NovelDownloader.Tool.OnlineNovelDownloaderPluginCreater.Controls"
         mc:Ignorable="d"
         Title="在线小说下载器插件生成器" Height="700" Width="1000"
         WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
@@ -90,6 +91,9 @@
                         </TabItem>
                         <TabItem x:Name="tiHTML_SOURCE" Header="HTML/SOURCE">
                             <RichTextBox x:Name="rtbHTML_SOURCE" IsReadOnly="True"></RichTextBox>
+                        </TabItem>
+                        <TabItem x:Name="tiHTML_DocumentViewer" Header="HTML/DocumentViewer">
+                            <controls:HtmlDocumentViewer></controls:HtmlDocumentViewer>
                         </TabItem>
                     </TabControl>
 
