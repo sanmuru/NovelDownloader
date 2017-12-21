@@ -1,10 +1,10 @@
-﻿using System;
+﻿using SamLu.NovelDownloader.Token;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NovelDownloader.Token;
 
-namespace NovelDownloader.Plugin.qidian.com
+namespace SamLu.NovelDownloader.Plugin.qidian.com
 {
 	public class TextToken : NDTText
 	{

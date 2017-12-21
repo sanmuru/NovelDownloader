@@ -22,7 +22,8 @@ namespace NovelDownloaderPluginTest
 
             new string[]
             {
-                "sfacg.com.dll"
+                "sfacg.com.dll",
+                "qidian.com.dll"
             }
                 .Select(file => Path.Combine(plugins_directory, file))
                 .Where(file => Path.GetExtension(file).ToLower() == ".dll")

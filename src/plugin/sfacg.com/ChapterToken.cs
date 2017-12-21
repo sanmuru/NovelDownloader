@@ -11,8 +11,8 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
 {
 	public abstract class ChapterToken : NDTChapter
 	{
-		internal static readonly Regex FreeChapterUrlRegex = new Regex(@"http://book.sfacg.com/Novel/(?<BookUnicode>\d*)/(?<VolumeUnicode>\d*)/(?<ChapterUnicode>\d*)/", RegexOptions.Compiled);
-		internal static readonly Regex VipChapterUrlRegex = new Regex(@"http://book.sfacg.com/vip/c/(?<ChapterUnicode>\d*)/", RegexOptions.Compiled);
+		internal static readonly Regex FreeChapterUrlRegex = new Regex(@"http(s)?://book.sfacg.com/Novel/(?<BookUnicode>\d*)/(?<VolumeUnicode>\d*)/(?<ChapterUnicode>\d*)/", RegexOptions.Compiled);
+		internal static readonly Regex VipChapterUrlRegex = new Regex(@"http(s)?://book.sfacg.com/vip/c/(?<ChapterUnicode>\d*)/", RegexOptions.Compiled);
 
 		/// <summary>
 		/// 获取匹配章节URL的正则表达式。

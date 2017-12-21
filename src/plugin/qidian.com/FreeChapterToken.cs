@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
 
-namespace NovelDownloader.Plugin.qidian.com
+namespace SamLu.NovelDownloader.Plugin.qidian.com
 {
 	public class FreeChapterToken : ChapterToken
 	{

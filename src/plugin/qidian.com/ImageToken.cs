@@ -1,15 +1,15 @@
-﻿using System;
+﻿using SamLu.NovelDownloader.Token;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using NovelDownloader.Token;
 
-namespace NovelDownloader.Plugin.qidian.com
+namespace SamLu.NovelDownloader.Plugin.qidian.com
 {
 	public class ImageToken : NDTImage
 	{
-		internal static readonly Regex ImageUrlRegex = new Regex(@"http://pic.wenku8.com/pictures/\d*/(?<BookUnicode>\d*)/(?<ChapterUnicode>\d*)/(?<ImageFileName>(?<ImageUnicode>\d*).(\w*))", RegexOptions.Compiled);
+		internal static readonly Regex ImageUrlRegex = new Regex(@"http(s)?://pic.wenku8.com/pictures/\d*/(?<BookUnicode>\d*)/(?<ChapterUnicode>\d*)/(?<ImageFileName>(?<ImageUnicode>\d*).(\w*))", RegexOptions.Compiled);
 
 		/// <summary>
 		/// 图片的统一码。

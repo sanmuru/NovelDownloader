@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
-using NovelDownloader.Token;
+using SamLu.NovelDownloader.Token;
 
-namespace NovelDownloader.Plugin.qidian.com
+namespace SamLu.NovelDownloader.Plugin.qidian.com
 {
 	public class VolumeToken : NDTVolume
 	{

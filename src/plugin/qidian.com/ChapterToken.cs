@@ -5,15 +5,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
-using NovelDownloader.Token;
-using SamLu.Web;
+using SamLu.NovelDownloader.Token;
 
-namespace NovelDownloader.Plugin.qidian.com
+namespace SamLu.NovelDownloader.Plugin.qidian.com
 {
 	public abstract class ChapterToken : NDTChapter
 	{
-		internal static readonly Regex FreeChapterUrlRegex = new Regex(@"http://read.qidian.com/chapter/(?<BookUnicode>\w*)/(?<ChapterUnicode>\w*)", RegexOptions.Compiled);
-		internal static readonly Regex VipChapterUrlRegex = new Regex(@"http://vipreader.qidian.com/chapter/(?<BookUnicode>\d*)/(?<ChapterUnicode>\d*)", RegexOptions.Compiled);
+		internal static readonly Regex FreeChapterUrlRegex = new Regex(@"http(s)?://read.qidian.com/chapter/(?<BookUnicode>\w*)/(?<ChapterUnicode>\w*)", RegexOptions.Compiled);
+		internal static readonly Regex VipChapterUrlRegex = new Regex(@"http(s)?://vipreader.qidian.com/chapter/(?<BookUnicode>\d*)/(?<ChapterUnicode>\d*)", RegexOptions.Compiled);
 
 		/// <summary>
 		/// 获取匹配章节URL的正则表达式。
@@ -77,8 +76,8 @@ namespace NovelDownloader.Plugin.qidian.com
 
 			try
 			{
-				HtmlDocument doc = new HtmlDocument();
-				doc.LoadHtml(HTML.GetSource(this.ChapterUrl, Encoding.UTF8));
+                HtmlWeb web = new HtmlWeb();
+                HtmlDocument doc = web.Load(this.ChapterUrl);
 
 				if (this.CanStartCreepInternal(doc))
 				{

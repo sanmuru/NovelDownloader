@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NovelDownloader.Plugin.qidian.com</RootNamespace>
     <AssemblyName>qidian.com</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,16 +30,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack, Version=1.6.8.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\HtmlAgilityPack.1.6.8\lib\Net20\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="SamLu, Version=1.6.0.0, Culture=neutral, PublicKeyToken=62bf6dedc251d3c5, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\C# Study Files\SamLu[0]\SamLu.dll</HintPath>
+      <HintPath>..\..\packages\HtmlAgilityPack.1.6.8\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -57,13 +57,9 @@
     <Compile Include="VolumeToken.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\NovelDownloader.Core\NovelDownloader.Core.csproj">
-      <Project>{1ec7cccb-835f-4b70-8dae-ccb984c8683f}</Project>
-      <Name>NovelDownloader.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NovelDownloader.Plugin.Core\NovelDownloader.Plugin.Core.csproj">
-      <Project>{5327b531-d3db-491b-927b-8e337ff20a70}</Project>
-      <Name>NovelDownloader.Plugin.Core</Name>
+    <ProjectReference Include="..\..\core\SamLu.NovelDownloader\SamLu.NovelDownloader.csproj">
+      <Project>{c0aa88f5-99bb-42bc-9fe1-bc1f10887c75}</Project>
+      <Name>SamLu.NovelDownloader</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

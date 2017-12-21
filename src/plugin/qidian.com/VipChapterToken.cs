@@ -5,9 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
-using SamLu.Web;
 
-namespace NovelDownloader.Plugin.qidian.com
+namespace SamLu.NovelDownloader.Plugin.qidian.com
 {
 	public class VipChapterToken : ChapterToken
 	{
@@ -36,7 +35,8 @@ namespace NovelDownloader.Plugin.qidian.com
 #if false
 				System.Diagnostics.Process.Start(string.Format("http://vipreader.qidian.com/chapter/{0}/{1}", this.BookUnicode, this.ChapterUnicode));
 #endif
-				doc.LoadHtml(HTML.GetSource(this.ChapterUrl, Encoding.UTF8)); // 重新加载文档。
+                HtmlWeb web = new HtmlWeb();
+                doc = web.Load(this.ChapterUrl); // 重新加载文档。
 				
 				if (doc.DocumentNode.SelectSingleNode("//div[@class='vip-limit-wrap']") == null) return true;
 				else

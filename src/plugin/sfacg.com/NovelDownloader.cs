@@ -97,12 +97,8 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
             catch (Exception)
             {
                 bookToken = null;
-
-#if DEBUG
-                throw;
-#else
+                
                 return false;
-#endif
             }
         }
     }

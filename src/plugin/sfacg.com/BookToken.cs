@@ -13,8 +13,8 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
     [NovelDownLoadPluginBookToken(NovelDownloader._guidStr)]
     internal class BookToken : NDTBook
     {
-        internal static readonly Regex BookUrlRegex = new Regex(@"^http://book.sfacg.com/Novel/(?<BookUnicode>\d*)(/)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        internal static readonly Regex CategoryUrlRegex = new Regex(@"^http://book.sfacg.com/Novel/(?<BookUnicode>\d*)/MainIndex(/)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        internal static readonly Regex BookUrlRegex = new Regex(@"^http(s)?://book.sfacg.com/Novel/(?<BookUnicode>\d*)(/)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        internal static readonly Regex CategoryUrlRegex = new Regex(@"^http(s)?://book.sfacg.com/Novel/(?<BookUnicode>\d*)/MainIndex(/)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         
         public override string Type { get; protected set; } = "书籍";
 

@@ -51,6 +51,10 @@
       <Project>{c0aa88f5-99bb-42bc-9fe1-bc1f10887c75}</Project>
       <Name>SamLu.NovelDownloader</Name>
     </ProjectReference>
+    <ProjectReference Include="..\plugin\qidian.com\qidian.com.csproj">
+      <Project>{e17592fa-587d-4276-8076-37f831489e36}</Project>
+      <Name>qidian.com</Name>
+    </ProjectReference>
     <ProjectReference Include="..\plugin\sfacg.com\sfacg.com.csproj">
       <Project>{5a0fcd1c-336d-4a20-b67e-529ff44e23d6}</Project>
       <Name>sfacg.com</Name>
