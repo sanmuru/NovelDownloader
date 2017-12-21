@@ -40,6 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -49,12 +50,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BookWriterBase.cs" />
     <Compile Include="DataEventArgs.cs" />
+    <Compile Include="IBookWriter.cs" />
+    <Compile Include="LightNovelBookWriter.cs" />
     <Compile Include="NDToken.cs" />
+    <Compile Include="NormalBookWriter.cs" />
+    <Compile Include="Plugin\ILightNovelDownloadPlugin.cs" />
+    <Compile Include="Plugin\INovelDownloaderPluginManager.cs" />
     <Compile Include="Plugin\INovelDownloadPlugin.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
     <Compile Include="Plugin\IPluginManager.cs" />
+    <Compile Include="Plugin\NovelDownloadPluginBase.cs" />
     <Compile Include="Plugin\PluginBase.cs" />
+    <Compile Include="Plugin\NovelDownLoadPluginBookToken.cs" />
     <Compile Include="Plugin\PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token\NDTBook.cs" />

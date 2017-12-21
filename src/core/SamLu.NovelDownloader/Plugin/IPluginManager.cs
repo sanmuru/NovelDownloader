@@ -21,5 +21,5 @@ namespace SamLu.NovelDownloader.Plugin
 		/// </summary>
 		/// <param name="plugin">指定的插件对象</param>
 		void Release(IPlugin plugin);
-	}
+    }
 }

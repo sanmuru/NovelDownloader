@@ -5,25 +5,36 @@ using System.Text;
 using System.Threading.Tasks;
 using SamLu.NovelDownloader.Token;
 using System.Text.RegularExpressions;
+using System.ComponentModel.Composition;
 
 namespace SamLu.NovelDownloader.Plugin.sfacg.com
 {
-    internal sealed class NovelDownloader : INovelDownloadPlugin
+    [Export(CONTRACTNAME_NOVELDOWNLOADPLUGIN, typeof(INovelDownloadPlugin))]
+    internal sealed class NovelDownloader : NovelDownloadPluginBase
     {
         internal static readonly Uri HostUri = new Uri("http://book.sfacg.com/", UriKind.Absolute);
 
-        public string Name { get; } = "sfacg.com";
+        public override string Name { get; } = "sfacg.com";
 
-        public string DisplayName { get; } = "SF轻小说";
+        public override string DisplayName { get; } = "SF轻小说";
 
-        public Version Version { get; } = new Version(1, 0, 0, DateTime.Now.ToString("yyyyMMdd"), Version.BetaVersion);
+        public override Version Version { get; } = new Version(1, 0, 0, DateTime.Now.ToString("yyyyMMdd"), Version.BetaVersion);
 
-        public Version MinVersion { get; } = Version.MinVersion;
+        public override Version MinVersion { get; } = Version.MinVersion;
 
-        public string Description { get; } = "国内最大原创轻小说网站|明日的轻小说新星从这里起步,振兴中国轻小说";
+        public override string Description { get; } = "国内最大原创轻小说网站|明日的轻小说新星从这里起步,振兴中国轻小说";
 
-        internal static readonly Guid _guid = new Guid("798BA759-2A65-4587-ADB7-67F9D10216DB");
-        public Guid Guid => NovelDownloader._guid;
+        internal const string _guidStr = "798BA759-2A65-4587-ADB7-67F9D10216DB";
+        internal static readonly Guid _guid = new Guid(NovelDownloader._guidStr);
+        public override Guid Guid => NovelDownloader._guid;
+
+        /// <summary>
+        /// 插件初始化。
+        /// </summary>
+        public override void Initialize()
+        {
+            this.RegisterBookWriter(new LightNovelBookWriter());
+        }
 
         /// <summary>
         /// 获取指定书籍编号的<see cref="BookToken"/>对象。
@@ -75,7 +86,7 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
         /// <param name="uri">指定的统一资源标识符。</param>
         /// <param name="bookToken">位于指定的 <see cref="Uri"/> 位置的小说标签。</param>
         /// <returns>是否获取成功。</returns>
-        public bool TryGetBookToken(Uri uri, out NDTBook bookToken)
+        public override bool TryGetBookToken(Uri uri, out NDTBook bookToken)
         {
             try
             {
@@ -89,9 +100,9 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
 
 #if DEBUG
                 throw;
-#endif
-
+#else
                 return false;
+#endif
             }
         }
     }

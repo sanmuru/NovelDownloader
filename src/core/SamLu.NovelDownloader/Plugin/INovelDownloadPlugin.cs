@@ -18,5 +18,12 @@ namespace SamLu.NovelDownloader.Plugin
 		/// <param name="bookToken">位于指定的<see cref="Uri"/>位置的小说标签。</param>
 		/// <returns>是否获取成功。</returns>
 		bool TryGetBookToken(Uri uri, out NDTBook bookToken);
+
+        /// <summary>
+        /// 将书籍内容保存到文件。
+        /// </summary>
+        /// <param name="bookToken">书籍节点。</param>
+        /// <param name="outputDir">输出目录。</param>
+        void SaveTo(NDTBook bookToken, string outputDir);
 	}
 }

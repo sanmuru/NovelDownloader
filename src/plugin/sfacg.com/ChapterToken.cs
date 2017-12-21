@@ -167,9 +167,9 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
             switch (node.Name)
             {
                 case "img":
-                    string href = node.GetAttributeValue("href", null);
-                    this.Add(new ImageToken(href));
-                    this.OnCreepFetched(this, $"[插图({href})]");
+                    string src = node.GetAttributeValue("src", null);
+                    this.Add(new ImageToken(src));
+                    this.OnCreepFetched(this, $"[插图({src})]");
                     break;
                 case "div":
                 case "p":

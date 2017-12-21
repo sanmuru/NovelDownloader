@@ -35,5 +35,10 @@ namespace SamLu.NovelDownloader.Plugin
 		/// 获取插件的全局唯一标识符。
 		/// </summary>
 		Guid Guid { get; }
+
+        /// <summary>
+        /// 插件初始化。
+        /// </summary>
+        void Initialize();
 	}
 }

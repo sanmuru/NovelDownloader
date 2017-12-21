@@ -10,6 +10,7 @@ using System.Web;
 
 namespace SamLu.NovelDownloader.Plugin.sfacg.com
 {
+    [NovelDownLoadPluginBookToken(NovelDownloader._guidStr)]
     internal class BookToken : NDTBook
     {
         internal static readonly Regex BookUrlRegex = new Regex(@"^http://book.sfacg.com/Novel/(?<BookUnicode>\d*)(/)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -155,7 +156,7 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
                     HtmlNodeCollection volume_chapters = volume.SelectNodes("div[@class='catalog-list']/ul/li/a");
 
                     ulong volume_unicode = ulong.Parse((
-                        from node in volume.SelectNodes("div")
+                        from node in volume.SelectNodes("//div")
                             .FirstOrDefault(node => node.HasClass("downliad-box"))
                             .SelectNodes("p[@class='row']/a")
                         let href = node.GetAttributeValue("href", string.Empty)
@@ -237,7 +238,7 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
                 BookUnicode = this.BookUnicode,
                 VolumeUnicode = data.Key.unicode
             });
-            this.OnCreepFetched(this, data.Key);
+            this.OnCreepFetched(this, data.Key.title);
 
             return true;
         }

@@ -16,7 +16,7 @@ namespace NovelDownloaderPluginTest
 
         static void Main(string[] args)
         {
-            const string plugins_directory = @"plugins";
+            const string plugins_directory = @".\";
 
             if (!Directory.Exists(plugins_directory)) return;
 
@@ -24,7 +24,7 @@ namespace NovelDownloaderPluginTest
             {
                 "sfacg.com.dll"
             }
-                .Select(file=>file)
+                .Select(file => Path.Combine(plugins_directory, file))
                 .Where(file => Path.GetExtension(file).ToLower() == ".dll")
                 .ToList()
                 .ForEach(file =>
@@ -43,7 +43,7 @@ namespace NovelDownloaderPluginTest
                 {
                     if (plugin.TryGetBookToken(new Uri(url, UriKind.RelativeOrAbsolute), out NDTBook bookToken))
                     {
-                        bookToken.StartCreep();
+                        manager.SaveTo(bookToken, @"downloads\");
                     }
                 }
             }

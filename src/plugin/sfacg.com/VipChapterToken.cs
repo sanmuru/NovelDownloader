@@ -29,7 +29,7 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
 
 		protected override bool CanStartCreepInternal(HtmlDocument doc)
 		{
-			if (doc.GetElementbyId("ChapterBody").SelectNodes("img | p").Count == 0)
+			if (doc.GetElementbyId("ChapterBody").SelectNodes("img | p") == null)
 			{
 #warning 插入支付代码。
 #if false
@@ -39,7 +39,7 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
                 doc = web.Load(this.ChapterUrl); // 重新加载文档。
 
                 HtmlNode contentElement = doc.GetElementbyId("ChapterBody");
-                if (contentElement.SelectNodes("img | p").Count != 0) return true;
+                if (contentElement.SelectNodes("img | p") != null) return true;
                 else
                 {
                     this.enumerator = new[]

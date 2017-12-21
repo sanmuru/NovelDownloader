@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 
@@ -10,6 +11,10 @@ namespace SamLu.NovelDownloader.Plugin
 	/// </summary>
 	public abstract class PluginBase : IPlugin
     {
+        [Import(PluginManager.CONTRACTNAME_PLUGINMANAGER, typeof(IPluginManager), AllowDefault = true)]
+        private IPluginManager manager;
+        protected virtual IPluginManager Manager => this.manager;
+
         /// <summary>
         /// 获取插件的名字。
         /// </summary>
@@ -35,5 +40,10 @@ namespace SamLu.NovelDownloader.Plugin
         /// 获取插件的全局唯一标识符。
         /// </summary>
         public abstract Guid Guid { get; }
-	}
+
+        /// <summary>
+        /// 插件初始化。
+        /// </summary>
+        public abstract void Initialize();
+    }
 }
