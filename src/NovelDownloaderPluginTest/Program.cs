@@ -44,10 +44,15 @@ namespace NovelDownloaderPluginTest
                 {
                     if (plugin.TryGetBookToken(new Uri(url, UriKind.RelativeOrAbsolute), out NDTBook bookToken))
                     {
-                        manager.SaveTo(bookToken, @"downloads\");
+                        Program.download(bookToken);
                     }
                 }
             }
+        }
+
+        static async void download(NDTBook bookToken)
+        {
+            await manager.SaveToAsync(bookToken, @"downloads\");
         }
     }
 }

@@ -82,7 +82,7 @@ namespace SamLu.NovelDownloader.Plugin.sfacg.com
             HtmlDocument document = web.Load(this.BookUrl);
             HtmlNode html = document.DocumentNode;
 
-            HtmlNode banner = html.SelectNodes("//div").FirstOrDefault(node => node.HasClass("d-banner"));
+            HtmlNode banner = html.SelectNodes("//div").FirstOrDefault(node => node.HasClass("d-banner") | node.HasClass("d-normal-banner"));
             Match m = Regex.Match(banner.GetAttributeValue("style", string.Empty), @"background:url\((?<banner_background_url>[^\)]*)\)");
             if (m.Success)
                 this.Banner = new Uri(m.Groups["banner_background_url"].Value);

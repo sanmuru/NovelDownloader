@@ -41,5 +41,15 @@ namespace SamLu.NovelDownloader
         /// <param name="bookToken">书籍节点。</param>
         /// <param name="outputDir">输出目录。</param>
         protected abstract void WriteInternal(NDTBook bookToken, string outputDir);
+
+        /// <summary>
+        /// 异步将书籍输出到文件。
+        /// </summary>
+        /// <param name="bookToken">书籍节点。</param>
+        /// <param name="outputDir">输出目录。</param>
+        public virtual Task WriteAsync(NDTBook bookToken, string outputDir)
+        {
+            return Task.Run(() => Write(bookToken, outputDir));
+        }
     }
 }

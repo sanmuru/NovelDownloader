@@ -25,5 +25,12 @@ namespace SamLu.NovelDownloader.Plugin
         /// <param name="bookToken">书籍节点。</param>
         /// <param name="outputDir">输出目录。</param>
         void SaveTo(NDTBook bookToken, string outputDir);
+
+        /// <summary>
+        /// 寻找合适的书籍输出器，并异步保存书籍到文件。
+        /// </summary>
+        /// <param name="bookToken">书籍节点。</param>
+        /// <param name="outputDir">输出目录。</param>
+        Task SaveToAsync(NDTBook bookToken, string outputDir);
     }
 }

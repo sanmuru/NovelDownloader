@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using SamLu.NovelDownloader.Token;
 
 namespace SamLu.NovelDownloader.Plugin
@@ -137,6 +138,20 @@ namespace SamLu.NovelDownloader.Plugin
         {
             if (bookToken == null) throw new ArgumentNullException(nameof(bookToken));
 
+            IBookWriter bookWriter = this.FindBookWriterForBookToken(bookToken);
+            // 写入文件。
+            bookWriter.Write(bookToken, outputDir);
+        }
+
+        /// <summary>
+        /// 寻找合适的书籍输出器。
+        /// </summary>
+        /// <param name="bookToken">书籍节点。</param>
+        /// <returns>支持指定书籍节点的书籍输出器。</returns>
+        /// <exception cref="NotSupportedException">未找到支持节点的小说下载插件。</exception>
+        /// <exception cref="NotSupportedException">不支持的插件类型。</exception>
+        protected internal IBookWriter FindBookWriterForBookToken(NDTBook bookToken)
+        {
             NovelDownLoadPluginBookTokenAttribute attribute = bookToken.GetType().GetCustomAttribute<NovelDownLoadPluginBookTokenAttribute>(true);
             if (attribute == null)
                 throw new NotSupportedException("未找到支持节点的小说下载插件。");
@@ -158,11 +173,27 @@ namespace SamLu.NovelDownloader.Plugin
                 var container = new CompositionContainer(catalog);
                 container.ComposeParts(plugin, bookWriter, this);
 
-                // 写入文件。
-                bookWriter.Write(bookToken, outputDir);
+                return bookWriter;
             }
             else
                 throw new NotSupportedException("不支持的插件类型。");
+        }
+
+        /// <summary>
+        /// 寻找合适的书籍输出器，并异步保存书籍到文件。
+        /// </summary>
+        /// <param name="bookToken">书籍节点。</param>
+        /// <param name="outputDir">输出目录。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="bookToken"/> 的值为 <see langword="null"/> 。</exception>
+        /// <exception cref="NotSupportedException">未找到支持节点的小说下载插件。</exception>
+        /// <exception cref="NotSupportedException">不支持的插件类型。</exception>
+        public Task SaveToAsync(NDTBook bookToken, string outputDir)
+        {
+            if (bookToken == null) throw new ArgumentNullException(nameof(bookToken));
+
+            IBookWriter bookWriter = this.FindBookWriterForBookToken(bookToken);
+            // 异步写入文件。
+            return bookWriter.WriteAsync(bookToken, outputDir);
         }
     }
 }
