@@ -55,18 +55,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NovelDownloader.Designer.cs">
-      <DependentUpon>NovelDownloader.cs</DependentUpon>
-    </None>
+    <None Include="NovelDownloader.ndplugin" />
+    <None Include="NovelDownloader.ndplugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="AssemblyInfo.cs" />
+    <None Include="target_AssemblyInfo.cs" />
     <None Include="NovelDownloader.cs" />
+    <None Include="target_packages.config" />
     <None Include="ProjectTemplate.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <VSTemplate Include="NovelDownloaderPluginProjectTemplate.vstemplate" />
+    <VSTemplate Include="NovelDownloaderPluginProjectTemplate.vstemplate">
+      <SubType>Designer</SubType>
+    </VSTemplate>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\core\SamLu.NovelDownloader\SamLu.NovelDownloader.csproj">

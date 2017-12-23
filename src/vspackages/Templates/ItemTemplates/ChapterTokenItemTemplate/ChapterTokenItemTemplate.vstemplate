@@ -9,7 +9,7 @@
     <ProjectSubType>NovelDownloader 插件</ProjectSubType>
     <RequiredFrameworkVersion>4.5.1</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
-    <DefaultName>ChapterToken.ndtoken</DefaultName>
+    <DefaultName>ChapterToken</DefaultName>
   </TemplateData>
   <TemplateContent>
     <References>
@@ -17,8 +17,8 @@
         <Assembly>System</Assembly>
       </Reference>
     </References>
-    <ProjectItem ReplaceParameters="true" ItemType="NDToken" SubType="Designer">ChapterToken.ndtoken</ProjectItem>
-    <ProjectItem ReplaceParameters="true" DependentUpon="ChapterToken.ndtoken" ItemType="Compile" SubType="Code">ChapterToken.cs</ProjectItem>
-    <ProjectItem ReplaceParameters="true" DependentUpon="ChapterToken.ndtoken" ItemType="Compile" SubType="Code">ChapterToken.ndtoken.cs</ProjectItem>
+    <ProjectItem ReplaceParameters="true" TargetFileName="$fileinputname$.ndtoken" ItemType="NDToken" SubType="Designer" OpenInEditor="true">ChapterToken.ndtoken</ProjectItem>
+    <ProjectItem ReplaceParameters="true" TargetFileName="$fileinputname$.cs" DependentUpon="$fileinputname$.ndtoken" ItemType="Compile" SubType="Code" OpenInEditor="true">ChapterToken.cs</ProjectItem>
+    <ProjectItem ReplaceParameters="true" TargetFileName="$fileinputname$.ndtoken.cs" DependentUpon="$fileinputname$.ndtoken" ItemType="Compile" SubType="Code">ChapterToken.ndtoken.cs</ProjectItem>
   </TemplateContent>
 </VSTemplate>

@@ -9,6 +9,7 @@ $endif$using System.Text;
 
 namespace $rootnamespace$
 {
+    [NovelDownLoadPluginBookToken(NovelDownloader._guidStr)]
     partial class $safeitemrootname$
 	{
 	}

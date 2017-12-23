@@ -14,9 +14,11 @@
   </TemplateData>
   <TemplateContent>
     <Project File="ProjectTemplate.csproj" ReplaceParameters="true">
-      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">target_AssemblyInfo.cs</ProjectItem>
+      <ProjectItem TargetFileName="packages.config">target_packages.config</ProjectItem>
       <ProjectItem ReplaceParameters="true" OpenInEditor="true">NovelDownloader.cs</ProjectItem>
-      <ProjectItem ReplaceParameters="true">NovelDownloader.Designer.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true">NovelDownloader.ndplugin</ProjectItem>
+      <ProjectItem ReplaceParameters="true">NovelDownloader.ndplugin.cs</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>

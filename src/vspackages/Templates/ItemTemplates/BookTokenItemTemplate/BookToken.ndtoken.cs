@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using SamLu.NovelDownloader.Plugin;
 using SamLu.NovelDownloader.Token;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,6 @@ using System.Text.RegularExpressions;
 
 namespace $rootnamespace$
 {
-    [NovelDownLoadPluginBookToken(NovelDownloader._guidStr)]
     partial class $safeitemrootname$ : NDTBook
     {
     }

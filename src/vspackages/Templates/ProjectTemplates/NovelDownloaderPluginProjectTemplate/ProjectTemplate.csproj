@@ -32,7 +32,7 @@
 	</PropertyGroup>
 	<ItemGroup>
     <Reference Include="HtmlAgilityPack, Version=1.6.8.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\HtmlAgilityPack.1.6.8\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <HintPath>$(SolutionDir)packages\HtmlAgilityPack.1.6.8\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
 		<Reference Include="System"/>
 		$if$ ($targetframeworkversion$ >= 3.5)
@@ -47,8 +47,16 @@
 		<Reference Include="System.Data"/>
 		<Reference Include="System.Xml"/>
 	</ItemGroup>
+  <ItemGroup>
+    <Plugin Include="NovelDownloader.ndplugin"></Plugin>
+  </ItemGroup>
 	<ItemGroup>
-		<Compile Include="NovelDownloader.cs" />
+    <Compile Include="NovelDownloader.cs">
+      <DependentUpon>NovelDownloader.ndplugin</DependentUpon>
+    </Compile>
+    <Compile Include="NovelDownloader.ndplugin.cs">
+      <DependentUpon>NovelDownloader.ndplugin</DependentUpon>
+    </Compile>
 
 		<Compile Include="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
