@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Svg Vector Icons : http://www.sfont.cn -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve">
+	<metadata> Svg Vector Icons : http://www.sfont.cn </metadata>
+	<g>
+		<path fill="#F6F6F6" d="M0,50H1000V950H-1000V-950z"/>
+		<g fill="#424242">
+			<path d="M928.6,132.5c0,0,0.1,0.1,0.1,0.1v734.8c0,0-0.1,0.1-0.1,0.1H71.3c0,0-0.1-0.1-0.1-0.1V132.6c0,0,0.1-0.1,0.1-0.1H928.6z M928.8,71.3H71.3C37.6,71.3,10,98.8,10,132.5v735c0,33.7,27.6,61.3,61.3,61.3h857.5c33.7,0,61.3-27.6,61.3-61.3v-735C990,98.8,962.4,71.3,928.8,71.3L928.8,71.3z"/>
+			<path d="M806.3,285.6c0,50.7-41.1,91.9-91.9,91.9s-91.9-41.1-91.9-91.9s41.1-91.9,91.9-91.9S806.3,234.9,806.3,285.6z"/>
+			<path d="M867.5,806.3h-735V683.8l214.4-367.5l245,306.3h61.3l214.4-183.8V806.3z"/>
+		</g>
+	</g>
+</svg>

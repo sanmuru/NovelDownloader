@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>C# NovelDownloader 书籍节点</Name>
+    <Description>模版创建自定义的 NovelDownloader 插件的书籍节点。</Description>
+    <Icon>booktoken.ico</Icon>
+    <TemplateID>b2dd0055-6fd0-4d05-94d5-1462d3a1228e</TemplateID>
+    <ProjectType>CSharp</ProjectType>
+    <ProjectSubType>NovelDownloader 插件</ProjectSubType>
+    <RequiredFrameworkVersion>4.5.1</RequiredFrameworkVersion>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>BookToken.ndtoken</DefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+      <Reference>
+        <Assembly>System</Assembly>
+      </Reference>
+    </References>
+    <ProjectItem ReplaceParameters="true" ItemType="NDToken" SubType="Designer">BookToken.ndtoken</ProjectItem>
+    <ProjectItem ReplaceParameters="true" DependentUpon="BookToken.ndtoken" ItemType="Compile" SubType="Code">BookToken.cs</ProjectItem>
+    <ProjectItem ReplaceParameters="true" DependentUpon="BookToken.ndtoken" ItemType="Compile" SubType="Code">BookToken.ndtoken.cs</ProjectItem>
+  </TemplateContent>
+</VSTemplate>
