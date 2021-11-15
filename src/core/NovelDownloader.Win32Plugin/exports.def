@@ -1,0 +1,19 @@
+LIBRARY
+EXPORTS
+	GetAllPlugins
+	GetCompatibleHosts
+
+	Activate
+	Deactivate
+
+	Book_GetTitle
+	Book_GetAuthor
+	Book_GetTags
+	Book_GetDescription
+	Book_GetVolumes
+
+	Volume_GetTitle
+	Volume_GetChapters
+
+	Chapter_GetTitle
+	Chapter_GetUpdatedAt
