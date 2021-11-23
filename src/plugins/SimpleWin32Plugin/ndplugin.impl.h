@@ -22,6 +22,8 @@ struct Book {
 
 	Volume* Volumes;
 	int lenVolumes;
+
+	virtual void init() = 0;
 };
 
 struct Volume {
@@ -30,6 +32,8 @@ struct Volume {
 	Chapter* Chapters;
 	int lenChapters;
 	Book* Book;
+
+	virtual void init() = 0;
 };
 
 struct Chapter {
@@ -38,4 +42,6 @@ struct Chapter {
 
 	Volume* Volume;
 	Book* Book;
+
+	virtual void init() = 0;
 };

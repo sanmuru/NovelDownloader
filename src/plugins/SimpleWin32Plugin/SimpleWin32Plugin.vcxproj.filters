@@ -21,7 +21,10 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ndplugin.structure.h">
+    <ClInclude Include="ndplugin.impl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SimplePlugin.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -33,6 +36,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="book.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SimplePlugin.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

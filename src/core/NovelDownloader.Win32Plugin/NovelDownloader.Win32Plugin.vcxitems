@@ -17,6 +17,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ndplugin.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\noveldownloader.core\plugin\win32volume.cs" />
     <None Include="$(MSBuildThisFileDirectory)exports.def" />
   </ItemGroup>
 </Project>

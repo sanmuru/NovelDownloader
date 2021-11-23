@@ -28,7 +28,7 @@ int GetAllPlugins(LPWSTR lpPattern, PluginIterator iterator);
 int GetCompatibleHosts(HPLUGIN hPlugin, HostIterator iterator);
 
 HBOOK Activate(HPLUGIN hPlugin, LPWSTR lpUri);
-BOOL Deactivate(HPLUGIN hPlugin, BOOL recurse);
+BOOL Deactivate(HBOOK hBook, BOOL recurse);
 
 LPWSTR Book_GetTitle(HBOOK hBook);
 LPWSTR Book_GetAuthor(HBOOK hBook);
